@@ -1,7 +1,10 @@
 import React from 'react';
-import { Stage, Layer } from 'react-konva';
+import { Stage, Layer, Line } from 'react-konva';
 import circle_icon from '../../assets/icons/circle.png';
 import rectangle_icon from '../../assets/icons/rectangle.png';
+import pen_icon from '../../assets/icons/pen.png';
+import eraser_icon from '../../assets/icons/eraser.png';
+import select_icon from '../../assets/icons/cursor.png';
 import { v4 as uuidv4 } from 'uuid';
 import './canvas.scss';
 import Rectangle from './rectangle/Rectangle';
@@ -12,10 +15,46 @@ class Canvas extends React.Component{
   state = {
     rectangles:[],
     circles:[],
-    selectedId:null
+    selectedId:null,
+    tool:'select',
+    lines:[]
   }
 
   stageRef = React.createRef(null);
+
+  isDrawing = React.createRef(false);
+
+  handleMouseDown = (e) => {
+    this.isDrawing.current = this.state.tool!=='select';
+    const pos = e.target.getStage().getPointerPosition();
+    let temp = this.state.lines;
+    temp.push({ tool:this.state.tool, points: [pos.x, pos.y] });
+    this.setState({lines:temp});
+  };
+
+  handleMouseMove = (e) => {
+    const {lines}  = this.state;
+    // no drawing - skipping
+    if (!this.isDrawing.current || this.state.tool==='select') {
+      return;
+    }
+    const stage = e.target.getStage();
+    const point = stage.getPointerPosition();
+    let lastLine = lines[lines.length - 1];
+    // add point
+    lastLine.points = lastLine.points.concat([point.x, point.y]);
+
+    // replace last
+    // let temp = lines.splice(lines.length - 1, 1, lastLine);
+    let temp = lines;
+    temp[temp.length-1] = lastLine;
+    this.setState({lines:temp})
+    // setLines(lines.concat());
+  };
+
+  handleMouseUp = () => {
+    this.isDrawing.current = false;
+  };
 
   createRectangle = () => {
     let temp_rectangles = this.state.rectangles;
@@ -56,10 +95,19 @@ class Canvas extends React.Component{
   };
 
   render(){
-    const {selectedId, rectangles, circles} = this.state;
+    const {selectedId, rectangles, circles, lines} = this.state;
     return(
       <div className="canvas-toolbar-container">
         <div className="toolbar-container">
+          <div className="icon-container" onClick={()=>{this.setState({tool:'select'})}}>
+            <img src={select_icon} alt="select"></img>
+          </div>
+          <div className="icon-container" onClick={()=>{this.setState({tool:'pen'})}}>
+            <img src={pen_icon} alt="pen"></img>
+          </div>
+          <div className="icon-container" onClick={()=>{this.setState({tool:'eraser'})}}>
+            <img src={eraser_icon} alt="eraser"></img>
+          </div>
           <div className="icon-container" onClick={this.createCircle}>
             <img src={circle_icon} alt="circle"></img>
           </div>
@@ -68,8 +116,24 @@ class Canvas extends React.Component{
           </div>
         </div>
         <div className="canvas-outer-container">
-        <Stage width={window.innerWidth} height={window.innerHeight} ref={this.stageRef}>
+        <Stage width={window.innerWidth} height={window.innerHeight} ref={this.stageRef}
+          onMouseDown={this.handleMouseDown}
+          onMousemove={this.handleMouseMove}
+          onMouseup={this.handleMouseUp}>
           <Layer>
+            {lines.map((line, i) => (
+              <Line
+                key={i}
+                points={line.points}
+                stroke="#df4b26"
+                strokeWidth={5}
+                tension={0.5}
+                lineCap="round"
+                globalCompositeOperation={
+                  line.tool === 'eraser' ? 'destination-out' : 'source-over'
+                }
+              />
+            ))}
             {/* <Rect width={50} height={50} fill="red" /> */}
             {
               rectangles.map((rect, index) => (
