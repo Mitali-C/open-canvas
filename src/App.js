@@ -4,12 +4,16 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import './App.scss';
 import WebglCanvas from './components/webgl-canvas/WebglCanvas';
 import Elements from './components/webgl-elements/Elements';
+import PixiComponents from './components/pixi-components/PixiComponents';
 
 class App extends React.Component {
   render(){
     return(
       <Router>
         <Switch>
+          <Route path="/pixi">
+            <PixiComponents></PixiComponents>
+          </Route>
           <Route path="/elements">
             <Elements></Elements>
           </Route>
