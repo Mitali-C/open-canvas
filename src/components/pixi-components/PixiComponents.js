@@ -28,7 +28,6 @@ class PixiComponents extends React.Component {
     // Rectangle
     graphics.beginFill(0xDE3249);
     graphics.drawRect(50, 50, 100, 100);
-    graphics.transform();
     graphics.endFill();
 
     // Rectangle + line style 1
