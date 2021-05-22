@@ -4,6 +4,9 @@ import circle_icon from '../../assets/icons/circle.png';
 import rectangle_icon from '../../assets/icons/rectangle.png';
 import pen_icon from '../../assets/icons/pen.png'; 
 import select_icon from '../../assets/icons/cursor.png';
+import {drawRect} from './draw_rect';
+import {drawCircle} from './draw_circle';
+import {freehand} from './free_hand';
 import './pixi.scss';
 
 let app = new PIXI.Application({ 
@@ -80,48 +83,6 @@ class PixiComponents extends React.Component {
     }
   }
 
-  createRectangle = (x, y) => {
-    console.log("creating rectangle");
-    const graphics = new PIXI.Graphics();
-    let clicked = false;
-
-    // Rectangle
-    graphics.lineStyle(2, 0x000000, 1);
-    graphics.beginFill(0xFFFFFF);
-    graphics.drawRect(x, y, 100, 100);
-    graphics.interactive = true;
-    graphics.buttonMode = true;
-    
-    graphics.pointertap=()=>{
-      console.log('clicked:',)
-      clicked = true;
-    }
-    graphics.pointerout = (e)=>{
-      const coords = e.data.global;
-      console.log('mouse move:', x - coords.x);
-      if(clicked){
-        console.log('here');
-        // graphics.drawRect(coords.x, coords.y, 100, 100);
-      }
-    }
-    graphics.endFill();
-
-    app.stage.addChild(graphics);
-  }
-
-  createCircle = (x, y) => {
-    console.log("creating circle");
-    const graphics = new PIXI.Graphics();
-
-    // Circle
-    graphics.lineStyle(2, 0x000000, 1);
-    graphics.beginFill(0xFFFFFF, 1);
-    graphics.drawCircle(x, y, 50);
-    graphics.endFill();
-
-    app.stage.addChild(graphics);
-  }
-
   write = (x, y) => {
     console.log("creating line", x);
     const graphics = new PIXI.Graphics();
@@ -132,8 +93,8 @@ class PixiComponents extends React.Component {
     graphics.moveTo(x, y);
     // graphics.lineTo(this.state.mouse_position.x, this.state.mouse_position.y)
     graphics.interactive = true;
-    graphics.pointermove = (e) => {
-      // console.log('mouse down', e.data.global);
+    graphics.mouseout = (e) => {
+      console.log('mouse down', e.data.global);
       if(this.state.drawing){
         const coords = e.data.global;
         graphics.lineTo(coords.x, coords.y);
@@ -150,18 +111,18 @@ class PixiComponents extends React.Component {
     console.log();
     switch(this.state.tool){
       case "pen":
-        this.setState({drawing:true},()=>{
-          this.write(e.pageX, e.pageY);
-        });
-        
+        // this.setState({drawing:true},()=>{
+        //   this.write(e.pageX, e.pageY);
+        // });
+        freehand(e.pageX, e.pageY, app)
         break;
       case 'shape':
         switch(this.state.shape_type){
           case 'rectangle':
-            this.createRectangle(e.pageX, e.pageY);
+            drawRect(e.pageX, e.pageY, app);
             break;
           case "circle":
-            this.createCircle(e.pageX, e.pageY);
+            drawCircle(e.pageX, e.pageY, app);
             break;
           default:
             break;
