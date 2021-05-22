@@ -83,37 +83,10 @@ class PixiComponents extends React.Component {
     }
   }
 
-  write = (x, y) => {
-    console.log("creating line", x);
-    const graphics = new PIXI.Graphics();
-
-    // free hand drawing
-    graphics.lineStyle(3);
-    graphics.beginFill(0xFFFFFF);
-    graphics.moveTo(x, y);
-    // graphics.lineTo(this.state.mouse_position.x, this.state.mouse_position.y)
-    graphics.interactive = true;
-    graphics.mouseout = (e) => {
-      console.log('mouse down', e.data.global);
-      if(this.state.drawing){
-        const coords = e.data.global;
-        graphics.lineTo(coords.x, coords.y);
-        graphics.moveTo(coords.x, coords.y);
-      }
-      // graphics.drawCircle(coords.x, coords.y, 2);
-    }
-    graphics.endFill();
-
-    app.stage.addChild(graphics);
-  }
-
   onMouseDown = (e) => {
     console.log();
     switch(this.state.tool){
       case "pen":
-        // this.setState({drawing:true},()=>{
-        //   this.write(e.pageX, e.pageY);
-        // });
         freehand(e.pageX, e.pageY, app)
         break;
       case 'shape':
@@ -144,16 +117,16 @@ class PixiComponents extends React.Component {
     return (
       <div className="pixi">
         {this.renderToolbar()}
-      <div 
-        onMouseMove={this.onMouseMove}
-        onMouseDown={this.onMouseDown}
-        onMouseUp={this.onMouseUp}
-        style={{
-          cursor:this.getCursorType()
-        }}
-        ref="pxrender" 
-        id="pxrender">
-      </div>
+        <div 
+          onMouseMove={this.onMouseMove}
+          onMouseDown={this.onMouseDown}
+          onMouseUp={this.onMouseUp}
+          style={{
+            cursor:this.getCursorType()
+          }}
+          ref="pxrender" 
+          id="pxrender">
+        </div>
       </div>
     )
   }
