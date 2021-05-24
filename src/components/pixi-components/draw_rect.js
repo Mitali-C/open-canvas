@@ -22,6 +22,7 @@ const drawRect = (rect_data, app, callback) => {
   const onDragStart = (event) => {
     if(callback() === 'select'){ 
       graphics.alpha = 0.5;
+      graphics.pivot.set(mouse.x, mouse.y)
       dragging = true;
     }
   }
@@ -33,7 +34,7 @@ const drawRect = (rect_data, app, callback) => {
 
   const onDragMove = (event) => {
     if(dragging){
-      graphics.position.set(mouse.x, mouse.y)
+      graphics.position.set(mouse.x, mouse.y);
     }
   }
 

@@ -16,6 +16,7 @@ const drawCircle = (circle_data, app, callback) => {
   const onDragStart = (event) => {
     if(callback()==='select'){
       graphics.alpha = 0.5;
+      graphics.pivot.set(mouse.x, mouse.y);
       dragging = true;
     }
   }
