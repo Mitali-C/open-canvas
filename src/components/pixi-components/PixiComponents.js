@@ -39,7 +39,9 @@ class PixiComponents extends React.Component {
   }
 
   componentDidMount(){
-    // console.log(image_data[0])
+    document.addEventListener('contextmenu', e => {
+      e.preventDefault();
+   });
     let temp_img_list = [];
     for(let i =0 ; i<image_data.length; i++){
       temp_img_list.push(image_data[i].urls.thumb);
@@ -105,7 +107,6 @@ class PixiComponents extends React.Component {
   }
 
   onMouseDown = (e) => {
-    console.log();
     switch(this.state.tool){
       case "image":
         const img_id = uuidv4();

@@ -37,6 +37,9 @@ const drawRect = (rect_data, app, callback) => {
       graphics.position.set(mouse.x, mouse.y);
     }
   }
+  const right = (e) => {
+    console.log('right')
+  }
 
   graphics.pointerdown=onDragStart;
   graphics.pointerup = onDragEnd;
@@ -51,6 +54,12 @@ const drawRect = (rect_data, app, callback) => {
   graphics.touchendoutside = onDragEnd;
   graphics.mousemove = onDragMove;
   graphics.touchmove = onDragMove;
+
+  // For right click
+  graphics.rightdown = right;
+  graphics.rightup = right;
+  graphics.rightupoutside = right;
+  graphics.rightclick = right;
 }
 
 export {drawRect};
