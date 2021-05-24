@@ -20,8 +20,10 @@ const drawRect = (rect_data, app, callback) => {
   app.stage.addChild(graphics);
 
   const onDragStart = (event) => {
-    graphics.alpha = 0.5;
-    dragging = true;
+    if(callback() === 'select'){ 
+      graphics.alpha = 0.5;
+      dragging = true;
+    }
   }
 
   const onDragEnd = (event) => {

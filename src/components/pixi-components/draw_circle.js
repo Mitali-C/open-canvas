@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-const drawCircle = (circle_data, app) => {
+const drawCircle = (circle_data, app, callback) => {
   var mouse = app.renderer.plugins.interaction.mouse.global;
   var dragging = false;
   const graphics = new PIXI.Graphics();
@@ -14,8 +14,10 @@ const drawCircle = (circle_data, app) => {
 
   app.stage.addChild(graphics);
   const onDragStart = (event) => {
-    graphics.alpha = 0.5;
-    dragging = true;
+    if(callback()==='select'){
+      graphics.alpha = 0.5;
+      dragging = true;
+    }
   }
 
   const onDragEnd = (event) => {

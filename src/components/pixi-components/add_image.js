@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-const add_image = (img_data, app) => {
+const add_image = (img_data, app, callback) => {
   var mouse = app.renderer.plugins.interaction.mouse.global;
   var dragging = false;
 
@@ -18,8 +18,10 @@ const add_image = (img_data, app) => {
 
 
   const onDragStart = (event) => {
-    temp_image.alpha = 0.5;
-    dragging = true;
+    if(callback() === 'select'){ 
+      temp_image.alpha = 0.5;
+      dragging = true;
+    }
   }
 
   const onDragEnd = (event) => {

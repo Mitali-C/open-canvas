@@ -100,12 +100,8 @@ class PixiComponents extends React.Component {
     }
   }
 
-  callback = (type, data) => {
-    console.log("back!", type, data);
-    let temp_data = {};
-    temp_data['type'] = type;
-    temp_data['data'] = data;
-    this.setState({selected: temp_data})
+  callback = () => {
+    return this.state.tool;
   }
 
   onMouseDown = (e) => {
@@ -118,7 +114,7 @@ class PixiComponents extends React.Component {
         let temp_images = this.state.images;
         temp_images[img_id] = temp_img_data;
         this.setState({images: temp_images});
-        add_image(temp_img_data, app);
+        add_image(temp_img_data, app, this.callback);
         break;
       case "text":
         input_text(e.pageX, e.pageY, app)
@@ -142,7 +138,7 @@ class PixiComponents extends React.Component {
             let temp_circles = this.state.circles;
             temp_circles[circle_id] = tempc;
             this.setState({circles: temp_circles})
-            drawCircle(tempc, app);
+            drawCircle(tempc, app, this.callback);
             break;
           default:
             break;
