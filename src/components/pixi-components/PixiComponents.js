@@ -4,9 +4,14 @@ import circle_icon from '../../assets/icons/circle.png';
 import rectangle_icon from '../../assets/icons/rectangle.png';
 import pen_icon from '../../assets/icons/pen.png'; 
 import select_icon from '../../assets/icons/cursor.png';
+import image_icon from '../../assets/icons/image_icon.png';
 import {drawRect} from './draw_rect';
 import {drawCircle} from './draw_circle';
 import {freehand} from './free_hand';
+import {input_text} from './input_text';
+import {add_image} from './add_image';
+import {data as image_data} from './temp_images';
+import { v4 as uuidv4 } from 'uuid';
 import './pixi.scss';
 
 let app = new PIXI.Application({ 
@@ -23,16 +28,23 @@ class PixiComponents extends React.Component {
   state = {
     mouse_position:{},
     tool:'select',
-    retangles:[
-      {
-        fill:0xDE3249,
-        coords:{x:50, y:50, w:100, h:200}
-      }
-    ],
-    drawing:false
+    retangles:{},
+    circles:{},
+    drawing:false,
+    rectangles:[],
+    selected:{},
+    images:{},
+    images_list:[],
+    show_image_modal: false,
   }
 
   componentDidMount(){
+    // console.log(image_data[0])
+    let temp_img_list = [];
+    for(let i =0 ; i<image_data.length; i++){
+      temp_img_list.push(image_data[i].urls.thumb);
+    }
+    this.setState({images_list: temp_img_list});
   
     //Add the canvas that Pixi automatically created for you to the HTML document
     document.querySelector('#pxrender').appendChild(app.view);
@@ -46,6 +58,11 @@ class PixiComponents extends React.Component {
       <div className="toolbar-container">
       <div className="icon-container" onClick={()=>{this.setState({tool:'select'})}}>
         <img src={select_icon} alt="select"></img>
+      </div>
+      <div className="icon-container" onClick={()=>{
+        this.setState({tool:'image'});
+      }}>
+        <img src={image_icon} alt="text"></img>
       </div>
       <div className="icon-container" onClick={()=>{this.setState({tool:'pen'})}}>
         <img src={pen_icon} alt="pen"></img>
@@ -83,46 +100,45 @@ class PixiComponents extends React.Component {
     }
   }
 
-  write = (x, y) => {
-    console.log("creating line", x);
-    const graphics = new PIXI.Graphics();
-
-    // free hand drawing
-    graphics.lineStyle(3);
-    graphics.beginFill(0xFFFFFF);
-    graphics.moveTo(x, y);
-    // graphics.lineTo(this.state.mouse_position.x, this.state.mouse_position.y)
-    graphics.interactive = true;
-    graphics.mouseout = (e) => {
-      console.log('mouse down', e.data.global);
-      if(this.state.drawing){
-        const coords = e.data.global;
-        graphics.lineTo(coords.x, coords.y);
-        graphics.moveTo(coords.x, coords.y);
-      }
-      // graphics.drawCircle(coords.x, coords.y, 2);
-    }
-    graphics.endFill();
-
-    app.stage.addChild(graphics);
+  callback = () => {
+    return this.state.tool;
   }
 
   onMouseDown = (e) => {
     console.log();
     switch(this.state.tool){
+      case "image":
+        const img_id = uuidv4();
+        const image_index = (Math.random() * (30 - 0) + 0).toFixed(0);
+        let temp_img_data = {x:e.pageX, y:e.pageY, width:100, height:100, id:img_id, source:this.state.images_list[image_index]};
+        let temp_images = this.state.images;
+        temp_images[img_id] = temp_img_data;
+        this.setState({images: temp_images});
+        add_image(temp_img_data, app, this.callback);
+        break;
+      case "text":
+        input_text(e.pageX, e.pageY, app)
+        break;
       case "pen":
-        // this.setState({drawing:true},()=>{
-        //   this.write(e.pageX, e.pageY);
-        // });
         freehand(e.pageX, e.pageY, app)
         break;
       case 'shape':
         switch(this.state.shape_type){
           case 'rectangle':
-            drawRect(e.pageX, e.pageY, app);
+            const id = uuidv4();
+            let temp = {x:e.pageX, y:e.pageY, width:100, height:100, id:id};
+            let temp_rects = this.state.rectangles;
+            temp_rects[id] = temp;
+            this.setState({rectangles: temp_rects})
+            drawRect(temp, app, this.callback);
             break;
           case "circle":
-            drawCircle(e.pageX, e.pageY, app);
+            const circle_id = uuidv4();
+            let tempc = {x:e.pageX, y:e.pageY, width:100, height:100, id:circle_id};
+            let temp_circles = this.state.circles;
+            temp_circles[circle_id] = tempc;
+            this.setState({circles: temp_circles})
+            drawCircle(tempc, app, this.callback);
             break;
           default:
             break;
@@ -132,28 +148,24 @@ class PixiComponents extends React.Component {
         break;
     }
   }
-
-  onMouseUp = () => {
-    console.log("UP")
-    if(this.state.tool==='pen'){
-      this.setState({drawing:false});
-    }
-  }
   
   render() {
     return (
       <div className="pixi">
         {this.renderToolbar()}
-      <div 
-        onMouseMove={this.onMouseMove}
-        onMouseDown={this.onMouseDown}
-        onMouseUp={this.onMouseUp}
-        style={{
-          cursor:this.getCursorType()
-        }}
-        ref="pxrender" 
-        id="pxrender">
-      </div>
+        <div 
+          onMouseMove={this.onMouseMove}
+          onMouseDown={this.onMouseDown}
+          onMouseUp={this.onMouseUp}
+          style={{
+            cursor:this.getCursorType()
+          }}
+          ref="pxrender" 
+          id="pxrender">
+        </div>
+        {/* <div className="control-panel">
+          control panel
+        </div> */}
       </div>
     )
   }

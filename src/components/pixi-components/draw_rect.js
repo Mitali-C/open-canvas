@@ -1,32 +1,55 @@
 import * as PIXI from "pixi.js";
 
-const drawRect = (x, y, app) => {
-  console.log("creating rectangle:", x, y);
-    const graphics = new PIXI.Graphics();
-    let clicked = false;
+const drawRect = (rect_data, app, callback) => {
+  var mouse = app.renderer.plugins.interaction.mouse.global;
 
-    // Rectangle
-    graphics.lineStyle(2, 0x000000, 1);
-    graphics.beginFill(0xFFFFFF);
-    graphics.drawRect(x, y, 100, 100);
-    graphics.interactive = true;
-    graphics.buttonMode = true;
-    
-    graphics.pointertap=()=>{
-      console.log('clicked:',)
-      clicked = true;
-    }
-    graphics.pointerout = (e)=>{
-      const coords = e.data.global;
-      console.log('mouse move:', x - coords.x);
-      if(clicked){
-        console.log('here');
-        // graphics.drawRect(coords.x, coords.y, 100, 100);
-      }
-    }
-    graphics.endFill();
+  const graphics = new PIXI.Graphics();
+  var dragging = false;
 
-    app.stage.addChild(graphics);
+  // Rectangle
+  graphics.lineStyle(2, 0x000000, 1);
+  graphics.beginFill(0xFFFFFF);
+  graphics.drawRect(rect_data.x, rect_data.y, rect_data.width, rect_data.height);
+  graphics.interactive = true;
+
+  graphics.click = (e) => {
+    callback('rectangle', rect_data)
+  }
+  graphics.endFill();
+
+  app.stage.addChild(graphics);
+
+  const onDragStart = (event) => {
+    if(callback() === 'select'){ 
+      graphics.alpha = 0.5;
+      dragging = true;
+    }
+  }
+
+  const onDragEnd = (event) => {
+    dragging = false;
+    graphics.alpha = 1;
+  }
+
+  const onDragMove = (event) => {
+    if(dragging){
+      graphics.position.set(mouse.x, mouse.y)
+    }
+  }
+
+  graphics.pointerdown=onDragStart;
+  graphics.pointerup = onDragEnd;
+  graphics.pointerupoutside = onDragEnd;
+  graphics.pointermove = onDragMove;
+
+  graphics.mousedown=onDragStart;
+  graphics.touchstart = onDragStart;
+  graphics.mouseup = onDragEnd;
+  graphics.mouseupoutside = onDragEnd;
+  graphics.touchend = onDragEnd;
+  graphics.touchendoutside = onDragEnd;
+  graphics.mousemove = onDragMove;
+  graphics.touchmove = onDragMove;
 }
 
 export {drawRect};
