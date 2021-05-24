@@ -35,6 +35,13 @@ const add_image = (img_data, app, callback) => {
     }
   }
 
+  const right = (e) => {
+    console.log('right');
+    alert('That was a right click!');
+    temp_image.alpha = 1;
+    dragging = false;
+  }
+
   temp_image.on('mousedown', onDragStart);
   temp_image.on('touchstart', onDragStart);
   temp_image.on('pointerdown', onDragStart);
@@ -47,6 +54,11 @@ const add_image = (img_data, app, callback) => {
   temp_image.on('mousemove', onDragMove);
   temp_image.on('touchmove', onDragMove);
   temp_image.on('pointermove', onDragMove);
+  // right click handlers
+  temp_image.on('rightdown', right);
+  temp_image.on('rightup', right);
+  // temp_image.on('rightupoutside', right);
+  temp_image.on('rightclick', right);
 }
 
 export {add_image};

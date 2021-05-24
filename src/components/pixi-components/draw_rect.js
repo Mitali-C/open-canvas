@@ -18,11 +18,10 @@ const drawRect = (rect_data, app, callback) => {
   graphics.endFill();
 
   app.stage.addChild(graphics);
-
   const onDragStart = (event) => {
-    if(callback() === 'select'){ 
+    if(callback()==='select'){
       graphics.alpha = 0.5;
-      graphics.pivot.set(mouse.x, mouse.y)
+      graphics.pivot.set(mouse.x, mouse.y);
       dragging = true;
     }
   }
@@ -34,17 +33,21 @@ const drawRect = (rect_data, app, callback) => {
 
   const onDragMove = (event) => {
     if(dragging){
-      graphics.position.set(mouse.x, mouse.y);
+      graphics.position.set(mouse.x, mouse.y)
     }
   }
+
   const right = (e) => {
-    console.log('right')
+    console.log('right');
+    alert('That was a right click!');
+    dragging = false;
+    graphics.alpha = 1;
   }
 
-  graphics.pointerdown=onDragStart;
-  graphics.pointerup = onDragEnd;
-  graphics.pointerupoutside = onDragEnd;
-  graphics.pointermove = onDragMove;
+  // graphics.pointerdown=onDragStart;
+  // graphics.pointerup = onDragEnd;
+  // graphics.pointerupoutside = onDragEnd;
+  // graphics.pointermove = onDragMove;
 
   graphics.mousedown=onDragStart;
   graphics.touchstart = onDragStart;
@@ -58,7 +61,7 @@ const drawRect = (rect_data, app, callback) => {
   // For right click
   graphics.rightdown = right;
   graphics.rightup = right;
-  graphics.rightupoutside = right;
+  // graphics.rightupoutside = right;
   graphics.rightclick = right;
 }
 
