@@ -7,6 +7,7 @@ import select_icon from '../../assets/icons/cursor.png';
 import {drawRect} from './draw_rect';
 import {drawCircle} from './draw_circle';
 import {freehand} from './free_hand';
+import { v4 as uuidv4 } from 'uuid';
 import './pixi.scss';
 
 let app = new PIXI.Application({ 
@@ -29,7 +30,8 @@ class PixiComponents extends React.Component {
         coords:{x:50, y:50, w:100, h:200}
       }
     ],
-    drawing:false
+    drawing:false,
+    rectangles:[]
   }
 
   componentDidMount(){
@@ -37,6 +39,9 @@ class PixiComponents extends React.Component {
     //Add the canvas that Pixi automatically created for you to the HTML document
     document.querySelector('#pxrender').appendChild(app.view);
     app.renderer.autoDensity = true;
+    for(let i=0; i<this.state.rectangles.length; i++){
+      console.log("called!")
+    }
   
   }
 
@@ -83,6 +88,10 @@ class PixiComponents extends React.Component {
     }
   }
 
+  callback = () => {
+    console.log("back!")
+  }
+
   onMouseDown = (e) => {
     console.log();
     switch(this.state.tool){
@@ -92,7 +101,11 @@ class PixiComponents extends React.Component {
       case 'shape':
         switch(this.state.shape_type){
           case 'rectangle':
-            drawRect(e.pageX, e.pageY, app);
+            let temp = {x:e.pageX, y:e.pageY, width:100, height:100, id:uuidv4()};
+            let temp_rects = this.state.rectangles;
+            temp_rects.push(temp);
+            this.setState({rectangles: temp_rects});
+            drawRect(e.pageX, e.pageY, app, this.callback);
             break;
           case "circle":
             drawCircle(e.pageX, e.pageY, app);
@@ -103,13 +116,6 @@ class PixiComponents extends React.Component {
         break;
       default:
         break;
-    }
-  }
-
-  onMouseUp = () => {
-    console.log("UP")
-    if(this.state.tool==='pen'){
-      this.setState({drawing:false});
     }
   }
   

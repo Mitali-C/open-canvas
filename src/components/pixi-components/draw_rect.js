@@ -1,9 +1,34 @@
 import * as PIXI from "pixi.js";
 
-const drawRect = (x, y, app) => {
-  console.log("creating rectangle:", x, y);
-    const graphics = new PIXI.Graphics();
-    let clicked = false;
+const drawRect = (x, y, app, callback) => {
+
+  const graphics = new PIXI.Graphics();
+  var data = null;
+  var dragging = false;
+
+  const onDragStart = (event) => {
+    data = event.data;
+    // console.log('start:', data, dragging);
+    dragging = true;
+  }
+
+  const onDragEnd = (event) => {
+    // console.log("end");
+    dragging = false;
+    // set the interaction data to null
+    data = null;
+  }
+
+  const onDragMove = (event) => {
+    if(dragging){
+      const coords = data.getLocalPosition(app.stage)
+      // console.log('moving...:',data.global.x ,coords.x);
+      graphics.x = coords.x;
+      graphics.y = coords.y;
+      // graphics.position.set(coords.x, coords.y)
+      // const newPosition = data.get
+    }
+  }
 
     // Rectangle
     graphics.lineStyle(2, 0x000000, 1);
@@ -11,19 +36,15 @@ const drawRect = (x, y, app) => {
     graphics.drawRect(x, y, 100, 100);
     graphics.interactive = true;
     graphics.buttonMode = true;
+
+    graphics.click = (e) => {
+      console.log('CLICKED:', graphics)
+    }
     
-    graphics.pointertap=()=>{
-      console.log('clicked:',)
-      clicked = true;
-    }
-    graphics.pointerout = (e)=>{
-      const coords = e.data.global;
-      console.log('mouse move:', x - coords.x);
-      if(clicked){
-        console.log('here');
-        // graphics.drawRect(coords.x, coords.y, 100, 100);
-      }
-    }
+    graphics.pointerdown=onDragStart;
+    graphics.pointerup = onDragEnd;
+    graphics.pointerupoutside = onDragEnd;
+    graphics.pointermove = onDragMove;
     graphics.endFill();
 
     app.stage.addChild(graphics);
