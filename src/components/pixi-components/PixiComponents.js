@@ -5,11 +5,12 @@ import rectangle_icon from '../../assets/icons/rectangle.png';
 import pen_icon from '../../assets/icons/pen.png'; 
 import select_icon from '../../assets/icons/cursor.png';
 import image_icon from '../../assets/icons/image_icon.png';
+import text_icon from '../../assets/icons/text.png';
 import {drawRect} from './draw_rect';
 import {drawCircle} from './draw_circle';
 import {freehand} from './free_hand';
-import {input_text} from './input_text';
 import {add_image} from './add_image';
+import {add_text} from './add_text';
 import {data as image_data} from './temp_images';
 import { v4 as uuidv4 } from 'uuid';
 import './pixi.scss';
@@ -66,6 +67,11 @@ class PixiComponents extends React.Component {
       }}>
         <img src={image_icon} alt="text"></img>
       </div>
+      <div className="icon-container" onClick={()=>{
+        this.setState({tool:'text'});
+      }}>
+        <img src={text_icon} alt="text"></img>
+      </div>
       <div className="icon-container" onClick={()=>{this.setState({tool:'pen'})}}>
         <img src={pen_icon} alt="pen"></img>
       </div>
@@ -118,7 +124,12 @@ class PixiComponents extends React.Component {
         add_image(temp_img_data, app, this.callback);
         break;
       case "text":
-        input_text(e.pageX, e.pageY, app)
+        const text_data = {
+          x: e.pageX,
+          y: e.pageY
+        }
+        add_text(text_data, app);
+        this.setState({tool:'select'})
         break;
       case "pen":
         freehand(e.pageX, e.pageY, app)
