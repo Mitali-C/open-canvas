@@ -107,7 +107,6 @@ class PixiComponents extends React.Component {
   }
 
   onMouseDown = (e) => {
-    console.log('called')
     switch(this.state.tool){
       case "image":
         const img_id = uuidv4();
