@@ -6,11 +6,13 @@ import pen_icon from '../../assets/icons/pen.png';
 import select_icon from '../../assets/icons/cursor.png';
 import image_icon from '../../assets/icons/image_icon.png';
 import text_icon from '../../assets/icons/text.png';
+import note_icon from '../../assets/icons/note.png';
 import {drawRect} from './draw_rect';
 import {drawCircle} from './draw_circle';
 import {freehand} from './free_hand';
 import {add_image} from './add_image';
 import {add_text} from './add_text';
+import {add_note} from './add_note';
 import {data as image_data} from './temp_images';
 import { v4 as uuidv4 } from 'uuid';
 import './pixi.scss';
@@ -57,7 +59,6 @@ class PixiComponents extends React.Component {
 
   renderToolbar = () => {
     return(
-
       <div className="toolbar-container">
       <div className="icon-container" onClick={()=>{this.setState({tool:'select'})}}>
         <img src={select_icon} alt="select"></img>
@@ -71,6 +72,11 @@ class PixiComponents extends React.Component {
         this.setState({tool:'text'});
       }}>
         <img src={text_icon} alt="text"></img>
+      </div>
+      <div className="icon-container" onClick={()=>{
+        this.setState({tool:'note'});
+      }}>
+        <img src={note_icon} alt="text"></img>
       </div>
       <div className="icon-container" onClick={()=>{this.setState({tool:'pen'})}}>
         <img src={pen_icon} alt="pen"></img>
@@ -131,6 +137,14 @@ class PixiComponents extends React.Component {
         add_text(text_data, app);
         this.setState({tool:'select'})
         break;
+      case "note":
+        const note_data = {
+          x: e.pageX,
+          y: e.pageY
+        }
+        add_note(note_data, app, this.callback);
+        this.setState({tool:'select'})
+        break;
       case "pen":
         freehand(e.pageX, e.pageY, app)
         break;
@@ -175,6 +189,7 @@ class PixiComponents extends React.Component {
           ref="pxrender" 
           id="pxrender">
         </div>
+        <div id="note-editor"></div>
         {/* <div className="control-panel">
           control panel
         </div> */}

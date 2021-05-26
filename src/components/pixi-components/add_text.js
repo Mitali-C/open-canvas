@@ -1,3 +1,5 @@
+// Doc - https://github.com/Mwni/PIXI.TextInput
+
 import * as PIXI from "pixi.js";
 const TextInput = require('pixi-text-input');
 
