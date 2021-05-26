@@ -3,6 +3,8 @@ import * as PIXI from "pixi.js";
 const add_image = (img_data, app, callback) => {
   var mouse = app.renderer.plugins.interaction.mouse.global;
   var dragging = false;
+  var __double = false;
+  var _clicked = false;
 
   var temp_image = PIXI.Sprite.from(img_data.source)
     
@@ -21,12 +23,24 @@ const add_image = (img_data, app, callback) => {
     if(callback() === 'select'){ 
       temp_image.alpha = 0.5;
       dragging = true;
+
+      // Check for double click
+      if(_clicked){
+        alert('double click in 600ms detected, you can emit or call method related!');
+        dragging = false;
+      }
+      _clicked = false;
+      clearTimeout(__double);
     }
   }
 
   const onDragEnd = (event) => {
     dragging = false;
     temp_image.alpha = 1;
+
+    // Check for double click
+    _clicked = true;
+    __double = setTimeout(() => { _clicked = false; }, 600); // time for double click detection
   }
 
   const onDragMove = (event) => {

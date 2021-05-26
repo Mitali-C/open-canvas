@@ -2,6 +2,10 @@
   display: flex;
   align-items: center;
 
+  .ql-editor{
+    padding: 0;
+  }
+
   .toolbar-container{
     position: absolute; 
     z-index: 1;

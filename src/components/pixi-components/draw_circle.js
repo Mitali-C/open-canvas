@@ -3,6 +3,8 @@ import * as PIXI from "pixi.js";
 const drawCircle = (circle_data, app, callback) => {
   var mouse = app.renderer.plugins.interaction.mouse.global;
   var dragging = false;
+  var __double = false;
+  var _clicked = false;
   const graphics = new PIXI.Graphics();
 
   // Circle
@@ -18,12 +20,24 @@ const drawCircle = (circle_data, app, callback) => {
       graphics.alpha = 0.5;
       graphics.pivot.set(mouse.x, mouse.y);
       dragging = true;
+
+      // Check for double click
+      if(_clicked){
+        alert('double click in 600ms detected, you can emit or call method related!');
+        dragging = false;
+      }
+      _clicked = false;
+      clearTimeout(__double);
     }
   }
 
   const onDragEnd = (event) => {
     dragging = false;
     graphics.alpha = 1;
+
+    // Check for double click
+    _clicked = true;
+    __double = setTimeout(() => { _clicked = false; }, 600); // time for double click detection
   }
 
   const onDragMove = (event) => {
