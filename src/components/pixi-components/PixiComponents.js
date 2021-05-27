@@ -166,6 +166,8 @@ class PixiComponents extends React.Component {
             this.setState({circles: temp_circles})
             drawCircle(tempc, app, this.callback);
             break;
+          case "select":
+            console.log("Select tool fired over canvas")
           default:
             break;
         }
