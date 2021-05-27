@@ -7,7 +7,7 @@ const add_image = (img_data, app, callback) => {
   var dragging = false;
   var __double = false;
   var _clicked = false;
-  var _selected = false;
+  // var _selected = false;
 
   var mouse_start_x = 0
   var mouse_start_y = 0
