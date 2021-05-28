@@ -33,24 +33,21 @@ const add_image = (img_data, app, callback) => {
 
     // app.stage.addChild(graphics);
     temp_image.addChild(graphics)
-
-
-    let xs = [0, temp_image.width, temp_image.width, 0]
-    let ys = [0, 0, temp_image.height, temp_image.height]
-    for(let i=0; i<4; i++)
-    {
-      let handle = new PIXI.Graphics();
-      handle.lineStyle(2, 0x006EFF, 1);
-      handle.beginFill(0xFFFFFF, 1);
-
-      handle.drawRect(xs[i]-5, ys[i]-5, 10, 10);
-      handle.alpha = 1
-      handle.endFill();
-      temp_image.addChild(handle)
-    }
-    
-
-
+    setTimeout(() => {  
+      let xs = [0, temp_image.width, temp_image.width, 0]
+      let ys = [0, 0, temp_image.height, temp_image.height]
+      for(let i=0; i<4; i++)
+      {
+        let handle = new PIXI.Graphics();
+        handle.lineStyle(2, 0x006EFF, 1);
+        handle.beginFill(0xFFFFFF, 1);
+  
+        handle.drawRect(xs[i]-5, ys[i]-5, 10, 10);
+        handle.alpha = 1
+        handle.endFill();
+        temp_image.addChild(handle)
+      }
+     }, 150);
 
   })
   

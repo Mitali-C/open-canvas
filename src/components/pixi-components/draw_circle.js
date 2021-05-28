@@ -13,6 +13,22 @@ const drawCircle = (circle_data, app, callback) => {
   graphics.drawEllipse(circle_data.x, circle_data.y, circle_data.width, circle_data.height);
   graphics.endFill();
   graphics.interactive = true;
+  console.log(graphics.getLocalBounds());
+  let bounds = graphics.getLocalBounds();
+
+  let xs = [bounds.x, bounds.x+graphics.width, bounds.x+graphics.width, bounds.x]
+  let ys = [bounds.y, bounds.y, bounds.y+graphics.height, bounds.y+graphics.height]
+  for(let i=0; i<4; i++)
+  {
+    let handle = new PIXI.Graphics();
+    handle.lineStyle(2, 0x006EFF, 1);
+    handle.beginFill(0xFFFFFF, 1);
+
+    handle.drawRect(xs[i]-5, ys[i]-5, 10, 10);
+    handle.alpha = 1
+    handle.endFill();
+    graphics.addChild(handle)
+  }
 
   app.stage.addChild(graphics);
   const onDragStart = (event) => {

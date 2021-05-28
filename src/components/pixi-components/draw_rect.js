@@ -19,6 +19,20 @@ const drawRect = (rect_data, app, callback) => {
   }
   graphics.endFill();
 
+  let xs = [rect_data.x, rect_data.x+graphics.width, rect_data.x+graphics.width, rect_data.x]
+  let ys = [rect_data.y, rect_data.y, rect_data.y+graphics.height, rect_data.y+graphics.height]
+  for(let i=0; i<4; i++)
+  {
+    let handle = new PIXI.Graphics();
+    handle.lineStyle(2, 0x006EFF, 1);
+    handle.beginFill(0xFFFFFF, 1);
+
+    handle.drawRect(xs[i]-5, ys[i]-5, 10, 10);
+    handle.alpha = 1
+    handle.endFill();
+    graphics.addChild(handle)
+  }
+
   app.stage.addChild(graphics);
   
   const onDragStart = (event) => {
@@ -58,6 +72,23 @@ const drawRect = (rect_data, app, callback) => {
     dragging = false;
     graphics.alpha = 1;
   }
+
+  // graphics.added = () => {
+  //   console.log('here')
+  //   let xs = [0, graphics.width, graphics.width, 0]
+  //   let ys = [0, 0, graphics.height, graphics.height]
+  //   for(let i=0; i<4; i++)
+  //   {
+  //     let handle = new PIXI.Graphics();
+  //     handle.lineStyle(2, 0x006EFF, 1);
+  //     handle.beginFill(0xFFFFFF, 1);
+
+  //     handle.drawRect(xs[i]-5, ys[i]-5, 10, 10);
+  //     handle.alpha = 1
+  //     handle.endFill();
+  //     graphics.addChild(handle)
+  //   }
+  // }
 
   // graphics.pointerdown=clickcheck;
   // graphics.pointerup = onDragEnd;
