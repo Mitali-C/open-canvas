@@ -10,7 +10,7 @@ import note_icon from '../../assets/icons/note.png';
 import {drawRect} from './draw_rect';
 import {drawCircle} from './draw_circle';
 import {freehand} from './free_hand';
-import {add_image} from './add_image';
+import {add_image} from './image-component/add_image';
 import {add_text} from './add_text';
 import {add_note} from './add_note';
 import {data as image_data} from './temp_images';
@@ -42,9 +42,9 @@ class PixiComponents extends React.Component {
   }
 
   componentDidMount(){
-    document.addEventListener('contextmenu', e => {
-      e.preventDefault();
-   });
+      document.addEventListener('contextmenu', e => {
+        e.preventDefault();
+    });
     let temp_img_list = [];
     for(let i =0 ; i<image_data.length; i++){
       temp_img_list.push(image_data[i].urls.thumb);
