@@ -1,5 +1,9 @@
 /* eslint-disable no-loop-func */
 import * as PIXI from "pixi.js";
+import {top_left} from './top_left';
+import {top_right} from './top_right';
+import {bottom_right} from './bottom_right';
+import {bottom_left} from './bottom_left';
 
 const add_image = (img_data, app, callback) => {
   var mouse = app.renderer.plugins.interaction.mouse.global;
@@ -25,7 +29,9 @@ const add_image = (img_data, app, callback) => {
   // ------------- BOUNDING BOXES ---------------------
   const graphics = new PIXI.Graphics();
 
-  var handle_drag = false;
+  const stopDrag = () => {
+    dragging =false;
+  }
 
   temp_image.on('added', () => {
     console.log("Loaded")
@@ -41,83 +47,12 @@ const add_image = (img_data, app, callback) => {
     setTimeout(() => {  
       let xs = [0, temp_image.width, temp_image.width, 0]
       let ys = [0, 0, temp_image.height, temp_image.height]
-      for(let i=0; i<4; i++)
-      {
-        let handle = new PIXI.Graphics();
-        handle.lineStyle(2, 0x006EFF, 1);
-        handle.beginFill(0xFFFFFF, 1);
-  
-        handle.drawRect(xs[i]-5, ys[i]-5, 10, 10);
-        handle.alpha = 1
-        handle.endFill();
-        handle.interactive = true;
-        temp_image.addChild(handle);
-        handle.on('mousedown', handleDragStart);
-        handle.on('touchstart', handleDragStart);
-        handle.on('pointerdown', handleDragStart);
-        handle.on('mouseup', handleDragEnd);
-        handle.on('mouseupoutside', handleDragEnd);
-        handle.on('touchend', handleDragEnd);
-        handle.on('touchendoutside', handleDragEnd);
-        handle.on('pointerup', handleDragEnd);
-        handle.on('pointerupoutside', handleDragEnd);
-        handle.on('mousemove', handleDragMove);
-        handle.on('touchmove', handleDragMove);
-        handle.on('pointermove', handleDragMove);
-      }
+      top_left(xs[0]-5, ys[0]-5, 10, 10, temp_image, app, callback, stopDrag);
+      top_right(xs[1]-5, ys[1]-5, 10, 10, temp_image, app, callback, stopDrag);
+      bottom_right(xs[2]-5, ys[2]-5, 10, 10, temp_image, app, callback, stopDrag);
+      bottom_left(xs[3]-5, ys[3]-5, 10, 10, temp_image, app, callback, stopDrag);
      }, 150);
   });
-
-  /**-------------HANDLE CONTROLS-------------------- */
-  const handleDragStart = (event) => {
-    if(callback()==='select'){
-      handle_drag = true;
-    }
-  }
-
-  const handleDragEnd = (event) => {
-    handle_drag = false;
-    console.log('mouse up!')
-  }
-
-  const handleDragMove = (event) => {
-    if(handle_drag){
-      dragging = false;
-
-      // X axis expand controls
-      if(mouse.x < temp_image.position.x){
-        console.log('X - 1')
-        temp_image.width = temp_image.width + (temp_image.position.x - mouse.x);
-        temp_image.position.x = mouse.x;
-      }
-      else if(mouse.x > temp_image.position.x && mouse.x < (temp_image.position.x + temp_image.width)){
-        console.log('X - 2')
-        temp_image.width = temp_image.width - (mouse.x - temp_image.position.x);
-        temp_image.position.x = mouse.x;
-
-      }
-      else if(mouse.x > (temp_image.position.x + temp_image.width)){
-        console.log('X - 3', );
-        temp_image.width = temp_image.width + (mouse.x - (temp_image.position.x + temp_image.width));
-      }
-
-      // // Y axis expand controls
-      if(mouse.y < temp_image.position.y){
-        console.log('Y - 1');
-        temp_image.height = temp_image.height + (temp_image.position.y - mouse.y);
-        temp_image.position.y = mouse.y;
-      }
-      else if(mouse.y > temp_image.position.y && mouse.y < (temp_image.position.y + temp_image.height)){
-        console.log('Y - 2');
-        temp_image.height = temp_image.height - (mouse.y - temp_image.position.y);
-        temp_image.position.y = mouse.y;
-      }
-      else if(mouse.y > (temp_image.position.y + temp_image.height)){
-        console.log('Y - 3');
-        temp_image.height = (mouse.y - temp_image.position.y) - (temp_image.height - temp_image.position.y);
-      }
-    }
-  }
 
   app.stage.addChild(temp_image);
 
