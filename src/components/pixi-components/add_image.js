@@ -3,8 +3,6 @@ import * as PIXI from "pixi.js";
 
 const add_image = (img_data, app, callback) => {
   var mouse = app.renderer.plugins.interaction.mouse.global;
-  app.renderer.plugins.interaction.on("click", () => {console.log("Click event")})
-  // console.log(mouse)
   var dragging = false;
   var __double = false;
   var _clicked = false;
@@ -13,13 +11,21 @@ const add_image = (img_data, app, callback) => {
   var mouse_start_x = 0
   var mouse_start_y = 0
 
-  var temp_image = PIXI.Sprite.from(img_data.source)
+  var temp_image = PIXI.Sprite.from(img_data.source);
+  
+  // center the sprite anchor point
+  temp_image.anchor.x = 0;
+  temp_image.anchor.y = 0;
+  
+  // move the sprite to the center of the canvas
+  temp_image.position.x = img_data.x;
+  temp_image.position.y = img_data.y;
+  temp_image.interactive = true;
+
+  // ------------- BOUNDING BOXES ---------------------
   const graphics = new PIXI.Graphics();
-  let handle = new PIXI.Graphics();
 
   var handle_drag = false;
-  var handle_drag_start_x = 0;
-  var handle_drag_start_y = 0;
 
   temp_image.on('added', () => {
     console.log("Loaded")
@@ -37,6 +43,7 @@ const add_image = (img_data, app, callback) => {
       let ys = [0, 0, temp_image.height, temp_image.height]
       for(let i=0; i<4; i++)
       {
+        let handle = new PIXI.Graphics();
         handle.lineStyle(2, 0x006EFF, 1);
         handle.beginFill(0xFFFFFF, 1);
   
@@ -45,25 +52,78 @@ const add_image = (img_data, app, callback) => {
         handle.endFill();
         handle.interactive = true;
         temp_image.addChild(handle);
+        handle.on('mousedown', handleDragStart);
+        handle.on('touchstart', handleDragStart);
+        handle.on('pointerdown', handleDragStart);
+        handle.on('mouseup', handleDragEnd);
+        handle.on('mouseupoutside', handleDragEnd);
+        handle.on('touchend', handleDragEnd);
+        handle.on('touchendoutside', handleDragEnd);
+        handle.on('pointerup', handleDragEnd);
+        handle.on('pointerupoutside', handleDragEnd);
+        handle.on('mousemove', handleDragMove);
+        handle.on('touchmove', handleDragMove);
+        handle.on('pointermove', handleDragMove);
       }
      }, 150);
   });
-  
-  // center the sprite anchor point
-  temp_image.anchor.x = 0;
-  temp_image.anchor.y = 0;
-  
-  // move the sprite to the center of the canvas
-  temp_image.position.x = img_data.x;
-  temp_image.position.y = img_data.y;
-  temp_image.interactive = true;
+
+  /**-------------HANDLE CONTROLS-------------------- */
+  const handleDragStart = (event) => {
+    if(callback()==='select'){
+      handle_drag = true;
+    }
+  }
+
+  const handleDragEnd = (event) => {
+    handle_drag = false;
+    console.log('mouse up!')
+  }
+
+  const handleDragMove = (event) => {
+    if(handle_drag){
+      dragging = false;
+
+      // X axis expand controls
+      if(mouse.x < temp_image.position.x){
+        console.log('X - 1')
+        temp_image.width = temp_image.width + (temp_image.position.x - mouse.x);
+        temp_image.position.x = mouse.x;
+      }
+      else if(mouse.x > temp_image.position.x && mouse.x < (temp_image.position.x + temp_image.width)){
+        console.log('X - 2')
+        temp_image.width = temp_image.width - (mouse.x - temp_image.position.x);
+        temp_image.position.x = mouse.x;
+
+      }
+      else if(mouse.x > (temp_image.position.x + temp_image.width)){
+        console.log('X - 3', );
+        temp_image.width = temp_image.width + (mouse.x - (temp_image.position.x + temp_image.width));
+      }
+
+      // // Y axis expand controls
+      if(mouse.y < temp_image.position.y){
+        console.log('Y - 1');
+        temp_image.height = temp_image.height + (temp_image.position.y - mouse.y);
+        temp_image.position.y = mouse.y;
+      }
+      else if(mouse.y > temp_image.position.y && mouse.y < (temp_image.position.y + temp_image.height)){
+        console.log('Y - 2');
+        temp_image.height = temp_image.height - (mouse.y - temp_image.position.y);
+        temp_image.position.y = mouse.y;
+      }
+      else if(mouse.y > (temp_image.position.y + temp_image.height)){
+        console.log('Y - 3');
+        temp_image.height = (mouse.y - temp_image.position.y) - (temp_image.height - temp_image.position.y);
+      }
+    }
+  }
 
   app.stage.addChild(temp_image);
 
+  // --------------- DRAGGING IMAGE ---------------------------
   const onDragStart = (event) => {
     if(callback() === 'select'){ 
-      
-      // console.log(mouse)
       mouse_start_x = mouse.x
       mouse_start_y = mouse.y
 
@@ -132,56 +192,6 @@ const add_image = (img_data, app, callback) => {
   temp_image.on('rightup', right);
   // temp_image.on('rightupoutside', right);
   temp_image.on('rightclick', right);
-
-  /**-------------HANDLE CONTROLS-------------------- */
-
-  const handleDragStart = (event) => {
-    if(callback()==='select'){
-      handle_drag_start_x = handle.x;
-      handle_drag_start_y = handle.y;
-      handle_drag = true;
-    }
-  }
-
-  const handleDragEnd = (event) => {
-    handle_drag = false;
-    console.log('up...')
-  }
-
-  const handleDragMove = (event) => {
-    if(handle_drag){
-      dragging = false;
-      console.log('moving...', temp_image.position.x, mouse.x, temp_image.width);
-      if(mouse.x < temp_image.position.x){
-        temp_image.width = temp_image.width + (temp_image.position.x - mouse.x);
-        temp_image.position.x = mouse.x;
-      }
-      else if(mouse.x > temp_image.position.x && mouse.x < (temp_image.position.x + temp_image.width)){
-        temp_image.width = temp_image.width - (mouse.x - temp_image.position.x);
-        temp_image.position.x = mouse.x;
-
-      }
-      else if(mouse.x > (temp_image.position.x + temp_image.width)){
-        temp_image.width = temp_image.width + (mouse.x - temp_image.width);
-      }
-    }
-  }
-  handle.on('mousedown', handleDragStart);
-  handle.on('touchstart', handleDragStart);
-  handle.on('pointerdown', handleDragStart);
-  handle.on('mouseup', handleDragEnd);
-  handle.on('mouseupoutside', handleDragEnd);
-  handle.on('touchend', handleDragEnd);
-  handle.on('touchendoutside', handleDragEnd);
-  handle.on('pointerup', handleDragEnd);
-  handle.on('pointerupoutside', handleDragEnd);
-  handle.on('mousemove', handleDragMove);
-  handle.on('touchmove', handleDragMove);
-  handle.on('pointermove', handleDragMove);
-}
-
-const addHandle = () => {
-  
 }
 
 export {add_image};
