@@ -33,7 +33,28 @@ const freehand = (x,y, app) => {
 		window.removeEventListener('mousemove', mouseMoveFun, true );
 		// Emptying up Pencil Points
 		// ppts = [];
+		// console.log(g.getLocalBounds());
+		// let bounds = g.getLocalBounds();
+		// let xs = [bounds.x, bounds.x+bounds.width, bounds.x+bounds.width, bounds.x]
+		// let ys = [bounds.y, bounds.y, bounds.y+bounds.height, bounds.y+bounds.height]
+		// for(let i=0; i<4; i++)
+		// {
+		// 	let handle = new PIXI.Graphics();
+		// 	handle.lineStyle(2, 0x006EFF, 1);
+		// 	handle.beginFill(0xFFFFFF, 1);
+
+		// 	handle.drawRect(xs[i]-5, ys[i]-5, 10, 10);
+		// 	handle.alpha = 1
+		// 	handle.endFill();
+		// 	g.addChild(handle)
+		// }
+	}, true);
+
+	const clicked = () => {
+		// Emptying up Pencil Points
+		// ppts = [];
 		console.log(g.getLocalBounds());
+		console.log('clicked')
 		let bounds = g.getLocalBounds();
 		let xs = [bounds.x, bounds.x+bounds.width, bounds.x+bounds.width, bounds.x]
 		let ys = [bounds.y, bounds.y, bounds.y+bounds.height, bounds.y+bounds.height]
@@ -48,20 +69,23 @@ const freehand = (x,y, app) => {
 			handle.endFill();
 			g.addChild(handle)
 		}
-	}, true);
+	};
 
 	const onPaint = () => {
 		// //draw a line
 		// var g = new PIXI.Graphics();
 		g.moveTo(ppts[0][0], ppts[0][1])
 		let current = [ppts[0][0], ppts[0][1]]
-		g.lineStyle(4, 0x000000, 1);
+		g.lineStyle(4, 0x000000, 0.5);
 		for(let i = 1; i<ppts.length-2 ; i++){
 			g.quadraticCurveTo(current[0], current[1], ppts[i][0], ppts[i][1])
 			current = [ppts[i][0], ppts[i][1]];
 			g.moveTo(ppts[i][0], ppts[i][1])
 		}
-		// console.log(g.getLocalBounds())
+		g.interactive = true;
+
+		g.mousedown = clicked;
+		console.log(g.getLocalBounds())
 		app.stage.addChild(g);
 	}
 }

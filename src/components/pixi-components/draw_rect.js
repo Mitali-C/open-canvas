@@ -32,7 +32,7 @@ const drawRect = (rect_data, app, callback) => {
       mouse_start_x = mouse.x
       mouse_start_y = mouse.y
       graphics.alpha = 0.5;
-      graphics.pivot.set(mouse.x, mouse.y);
+      // graphics.pivot.set(mouse.x, mouse.y);
       dragging = true;
 
       // Check for double click
