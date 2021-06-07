@@ -10,7 +10,7 @@ import note_icon from '../../assets/icons/note.png';
 // import {drawRect} from './draw_rect';
 // import {drawCircle} from './draw_circle';
 import {freehand} from './free_hand';
-import {add_image} from './image-component/add_image';
+// import {add_image} from './image-component/add_image';
 import {add_text} from './add_text';
 import {add_note} from './add_note';
 import {data as image_data} from './temp_images';
@@ -129,9 +129,9 @@ class PixiComponents extends React.Component {
         let temp_images = this.state.images;
         temp_images[img_id] = temp_img_data;
         this.setState({images: temp_images});
-        // new Image(app, this.state.images_list[image_index], temp_img_data);
+        new Image(app, this.state.images_list[image_index], temp_img_data);
         // myImage.drawImage();
-        add_image(temp_img_data, app, this.callback);
+        // add_image(temp_img_data, app, this.callback);
         break;
       case "text":
         const text_data = {

@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import {Transformer} from './transformer/Transformer';
 class BaseObject
 {
     constructor(app)
@@ -37,7 +38,7 @@ class BaseObject
     }
     onDragStart = (event) => {
         // if(callback() === 'select'){ 
-            console.log("Starting drag")
+            // console.log("Starting drag")
           this.mouse_start_x = this.mouse.x
           this.mouse_start_y = this.mouse.y
           this.displayObject.alpha = 0.5;
@@ -51,6 +52,7 @@ class BaseObject
           clearTimeout(this.__double);
         // }
       }
+
     onDragEnd = (event) => {
         if(this.displayObject)
         {
@@ -64,6 +66,7 @@ class BaseObject
             this.__double = setTimeout(() => { this._clicked = false; }, 150); // time for double click detection
         }
     }
+    
     onDragMove = (event) => {
         if(this.dragging && this.displayObject){
           let start_x = this.displayObject.position.x
@@ -76,13 +79,21 @@ class BaseObject
         }
       }
 
+    stopDrag = () => {
+        this.dragging = false;
+    }
+
     onClick = (event) => {
-        console.log('CLICKED!')
+        if(!this.isSelected){
+            this.drawTransformer();
+            Transformer(this.displayObject, this.mouse, this.stopDrag);
+            this.isSelected = true;
+        }
     }
     setInteractions = () => {
         if(this.displayObject)
         {
-            console.log("Setting Interactions", this.displayObject)
+            // console.log("Setting Interactions", this.displayObject)
             this.displayObject.on('mousedown', this.onDragStart);
             this.displayObject.on('touchstart', this.onDragStart);
             this.displayObject.on('pointerdown', this.onDragStart);
@@ -122,7 +133,7 @@ class Image extends BaseObject{
         this.displayObject = temp_image
         this.app.stage.addChild(temp_image); 
         // const graphics = new PIXI.Graphics();
-        setTimeout(() => {this.drawTransformer()}, 1000)
+        // setTimeout(() => {this.drawTransformer()}, 1000)
     }
 }
 class Shape extends BaseObject
@@ -157,7 +168,7 @@ class Shape extends BaseObject
     }
     this.displayObject = graphics
     this.app.stage.addChild(graphics);
-    setTimeout(() => {this.drawTransformer()}, 1000)
+    // setTimeout(() => {this.drawTransformer()}, 1000)
    }
 }
 export {
