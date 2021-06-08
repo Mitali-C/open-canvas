@@ -9,14 +9,15 @@ import text_icon from '../../assets/icons/text.png';
 import note_icon from '../../assets/icons/note.png';
 // import {drawRect} from './draw_rect';
 // import {drawCircle} from './draw_circle';
-import {freehand} from './free_hand';
+// import {freehand} from './free_hand';
 // import {add_image} from './image-component/add_image';
 import {add_text} from './add_text';
 import {add_note} from './add_note';
 import {data as image_data} from './temp_images';
 import { v4 as uuidv4 } from 'uuid';
-import {Image} from './base_object';
-import {Shape} from './base_object';
+import Image from './base-object/Image';
+import Shape from './base-object/Shape';
+import Markup from './base-object/Markup';
 import './pixi.scss';
 
 let app = new PIXI.Application({ 
@@ -150,7 +151,13 @@ class PixiComponents extends React.Component {
         this.setState({tool:'select'})
         break;
       case "pen":
-        freehand(e.pageX, e.pageY, app)
+        // freehand(e.pageX, e.pageY, app)
+        const markupdata = {
+          x:e.pageX, 
+          y:e.pageY
+        };
+        let pen = new Markup(app, markupdata);
+        pen.addMarkup();
         break;
       case 'shape':
         switch(this.state.shape_type){

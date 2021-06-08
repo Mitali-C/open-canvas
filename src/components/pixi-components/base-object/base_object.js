@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import {Transformer} from './transformer/Transformer';
+import {Transformer} from '../transformer/Transformer';
 class BaseObject
 {
     constructor(app)
@@ -110,79 +110,4 @@ class BaseObject
         }
     }
 }
-class Image extends BaseObject{
-    constructor(app, source, img_data)
-    {
-        super(app)
-        this.source = source
-        this.mask = undefined
-        this.img_data = img_data
-        this.drawImage()
-        this.setInteractions()
-    }
-    drawImage()
-    {
-        var temp_image = PIXI.Sprite.from(this.source);
-        // center the sprite anchor point
-        temp_image.anchor.x = 0;
-        temp_image.anchor.y = 0;
-        // move the sprite to the center of the canvas
-        temp_image.position.x = this.img_data.x;
-        temp_image.position.y = this.img_data.y;
-        temp_image.interactive = true;
-        this.displayObject = temp_image
-        this.app.stage.addChild(temp_image); 
-        // const graphics = new PIXI.Graphics();
-        // setTimeout(() => {this.drawTransformer()}, 1000)
-    }
-}
-class Shape extends BaseObject
-{
-   constructor(app, type, shape_data)
-   {
-    super(app)
-    this.type = type
-    this.shape_data = shape_data
-    this.drawShape()
-    this.setInteractions()
-   }
-   drawShape()
-   {
-    const graphics = new PIXI.Graphics();
-    graphics.lineStyle(2, 0x000000, 1);
-    graphics.beginFill(0xFFFFFF);
-    graphics.interactive = true;
-    // let shape = undefined
-    switch(this.type)
-    {
-        case 'RECTANGLE':
-            graphics.drawRect(this.shape_data.x, this.shape_data.y, this.shape_data.width, this.shape_data.height);
-            graphics.endFill();
-            break
-        case 'CIRCLE':
-            graphics.drawEllipse(this.shape_data.x, this.shape_data.y, this.shape_data.width, this.shape_data.height);
-            graphics.endFill();
-            break
-        default:
-            break
-    }
-    const graphicTexture = this.app.renderer.generateTexture(graphics);
-    const sprite = new PIXI.Sprite(graphicTexture);
-    // center the sprite anchor point
-    sprite.anchor.x = 0;
-    sprite.anchor.y = 0;
-    // move the sprite to the center of the canvas
-    sprite.position.x = this.shape_data.x;
-    sprite.position.y = this.shape_data.y;
-    sprite.interactive = true;
-    this.displayObject = sprite;
-    // sprite.tint = 0x000000; // set color to the shape
-    this.app.stage.addChild(sprite);
-    // setTimeout(() => {this.drawTransformer()}, 1000)
-   }
-}
-export {
-    BaseObject,
-    Image,
-    Shape
-}
+export default BaseObject;
