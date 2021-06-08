@@ -7,14 +7,17 @@ import select_icon from '../../assets/icons/cursor.png';
 import image_icon from '../../assets/icons/image_icon.png';
 import text_icon from '../../assets/icons/text.png';
 import note_icon from '../../assets/icons/note.png';
-import {drawRect} from './draw_rect';
-import {drawCircle} from './draw_circle';
-import {freehand} from './free_hand';
-import {add_image} from './image-component/add_image';
+// import {drawRect} from './draw_rect';
+// import {drawCircle} from './draw_circle';
+// import {freehand} from './free_hand';
+// import {add_image} from './image-component/add_image';
 import {add_text} from './add_text';
 import {add_note} from './add_note';
 import {data as image_data} from './temp_images';
 import { v4 as uuidv4 } from 'uuid';
+import Image from './base-object/Image';
+import Shape from './base-object/Shape';
+import Markup from './base-object/Markup';
 import './pixi.scss';
 
 let app = new PIXI.Application({ 
@@ -127,7 +130,9 @@ class PixiComponents extends React.Component {
         let temp_images = this.state.images;
         temp_images[img_id] = temp_img_data;
         this.setState({images: temp_images});
-        add_image(temp_img_data, app, this.callback);
+        new Image(app, this.state.images_list[image_index], temp_img_data);
+        // myImage.drawImage();
+        // add_image(temp_img_data, app, this.callback);
         break;
       case "text":
         const text_data = {
@@ -146,7 +151,13 @@ class PixiComponents extends React.Component {
         this.setState({tool:'select'})
         break;
       case "pen":
-        freehand(e.pageX, e.pageY, app)
+        // freehand(e.pageX, e.pageY, app)
+        const markupdata = {
+          x:e.pageX, 
+          y:e.pageY
+        };
+        let pen = new Markup(app, markupdata);
+        pen.addMarkup();
         break;
       case 'shape':
         switch(this.state.shape_type){
@@ -156,7 +167,8 @@ class PixiComponents extends React.Component {
             let temp_rects = this.state.rectangles;
             temp_rects[id] = temp;
             this.setState({rectangles: temp_rects})
-            drawRect(temp, app, this.callback);
+            // drawRect(temp, app, this.callback);
+            new Shape(app, 'RECTANGLE', temp);
             break;
           case "circle":
             const circle_id = uuidv4();
@@ -164,7 +176,8 @@ class PixiComponents extends React.Component {
             let temp_circles = this.state.circles;
             temp_circles[circle_id] = tempc;
             this.setState({circles: temp_circles})
-            drawCircle(tempc, app, this.callback);
+            // drawCircle(tempc, app, this.callback);
+            new Shape(app, 'CIRCLE', tempc);
             break;
           case "select":
             console.log("Select tool fired over canvas");
