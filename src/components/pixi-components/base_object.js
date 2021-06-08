@@ -86,7 +86,7 @@ class BaseObject
     onClick = (event) => {
         if(!this.isSelected){
             this.drawTransformer();
-            Transformer(this.displayObject, this.mouse, this.stopDrag);
+            new Transformer(this.displayObject, this.mouse, this.stopDrag);
             this.isSelected = true;
         }
     }
@@ -166,8 +166,18 @@ class Shape extends BaseObject
         default:
             break
     }
-    this.displayObject = graphics
-    this.app.stage.addChild(graphics);
+    const graphicTexture = this.app.renderer.generateTexture(graphics);
+    const sprite = new PIXI.Sprite(graphicTexture);
+    // center the sprite anchor point
+    sprite.anchor.x = 0;
+    sprite.anchor.y = 0;
+    // move the sprite to the center of the canvas
+    sprite.position.x = this.shape_data.x;
+    sprite.position.y = this.shape_data.y;
+    sprite.interactive = true;
+    this.displayObject = sprite;
+    // sprite.tint = 0x000000; // set color to the shape
+    this.app.stage.addChild(sprite);
     // setTimeout(() => {this.drawTransformer()}, 1000)
    }
 }
