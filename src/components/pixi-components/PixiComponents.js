@@ -53,6 +53,12 @@ class PixiComponents extends React.Component {
       temp_img_list.push(image_data[i].urls.thumb);
     }
     this.setState({images_list: temp_img_list});
+    // Use the native window resolution as the default resolution
+    // will support high-density displays when rendering
+    PIXI.settings.RESOLUTION = window.devicePixelRatio;
+   
+    // Disable interpolation when scaling, will make texture be pixelated
+    PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
   
     //Add the canvas that Pixi automatically created for you to the HTML document
     document.querySelector('#pxrender').appendChild(app.view);

@@ -29,7 +29,8 @@ class Shape extends BaseObject{
         default:
             break
     }
-    const graphicTexture = this.app.renderer.generateTexture(graphics);
+    var graphicTexture = this.app.renderer.generateTexture(graphics);
+    // graphicTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
     const sprite = new PIXI.Sprite(graphicTexture);
 
     // center the sprite anchor point
