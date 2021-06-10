@@ -20,8 +20,9 @@ class BaseObject
         this.isSelected = false
         this.app = app
         this.mouse = app.renderer.plugins.interaction.mouse.global;
-        this.zIndex = 0
+        this.zIndex = 0;
     }
+
     drawTransformer()
     {
         if(this.displayObject)
@@ -39,8 +40,8 @@ class BaseObject
 
     onClick = (event) => {
         if(!this.isSelected){
-            new TransformerPixi(this.displayObject, this.mouse, this.stopDrag, this.app);
             this.isSelected = true;
+            new TransformerPixi(this.displayObject, this.app);
         }
     }
     setInteractions = () => {
