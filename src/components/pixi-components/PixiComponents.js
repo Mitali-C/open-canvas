@@ -156,8 +156,7 @@ class PixiComponents extends React.Component {
           x:e.pageX, 
           y:e.pageY
         };
-        let pen = new Markup(app, markupdata);
-        pen.addMarkup();
+        new Markup(app, markupdata);
         break;
       case 'shape':
         switch(this.state.shape_type){
