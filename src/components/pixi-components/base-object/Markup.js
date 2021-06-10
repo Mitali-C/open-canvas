@@ -7,7 +7,7 @@ class Markup extends BaseObject{
     this.markup_data = markup_data;
     this.path = [];
     this.mouse = [0,0]
-    // this.addMarkup();
+    this.addMarkup();
   }
 
   addMarkup(){
@@ -15,12 +15,9 @@ class Markup extends BaseObject{
     var mouse = [0,0];
 
     var g = new PIXI.Graphics();
-    var mask = new PIXI.Graphics();
-    let  app = this.app;
     let moving = false;
 
     const mouseMoveFun = (e) => {
-      // console.log('moving....')
       moving = true;
         
       mouse[0] = typeof e.offsetX !== 'undefined' ? e.offsetX : e.layerX;
@@ -43,32 +40,23 @@ class Markup extends BaseObject{
     const onMouseUp = () => {
       window.removeEventListener('mousemove', mouseMoveFun, true );
       if(moving){
-        // console.log(app.stage.children)
-        const bounds = g.getLocalBounds();
-        mask.lineStyle(2, 0x006EFF, 1);
-        mask.beginFill(0xFFFFFF, 0.9);
-    
-        mask.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
-        mask.endFill();
-        // mask.alpha = 0.1;
-        mask.interactive = true;
-        // g.addChild(mask)
-        const graphicTexture = app.renderer.generateTexture(mask);
-        const sprite = new PIXI.Sprite(graphicTexture);
-    
+        g.boundsPadding = 0;
+        var texture = this.app.renderer.generateTexture(g);;
+        var sprite = new PIXI.Sprite(texture);
+
         // center the sprite anchor point
         sprite.anchor.x = 0;
         sprite.anchor.y = 0;
     
         // move the sprite to the center of the canvas
-        sprite.position.x = bounds.x;
-        sprite.position.y = bounds.y;
+        sprite.position.x = g.getLocalBounds().x;
+        sprite.position.y = g.getLocalBounds().y;
         sprite.interactive = true;
+        sprite.tint = 0xFF0000;
+        sprite.on('click', this.onClick)
         this.displayObject = sprite;
-        // sprite.alpha = 0;
-        g._mask = sprite;
-        app.stage.addChild(sprite)
-        this.displayObject = mask;
+        this.app.stage.children.pop();
+        this.app.stage.addChild(sprite);
       }
       moving = false;
     }
