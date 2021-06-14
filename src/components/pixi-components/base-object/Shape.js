@@ -15,6 +15,7 @@ class Shape extends BaseObject{
     const graphics = new PIXI.Graphics();
     graphics.lineStyle(2, 0x000000, 1);
     graphics.beginFill(0xFFFFFF);
+    graphics.scale.set(1);
     graphics.interactive = true;
     switch(this.type)
     {
@@ -29,24 +30,27 @@ class Shape extends BaseObject{
         default:
             break
     }
-    var graphicTexture = this.app.renderer.generateTexture(graphics);
-    // graphicTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-    const sprite = new PIXI.Sprite(graphicTexture);
 
-    // center the sprite anchor point
-    sprite.anchor.x = 0;
-    sprite.anchor.y = 0;
+    graphics.click = this.onClick;
+    // var graphicTexture = this.app.renderer.generateTexture(graphics);
+    // // graphicTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+    // const sprite = new PIXI.Sprite(graphicTexture);
 
-    // move the sprite to the center of the canvas
-    sprite.position.x = this.shape_data.x;
-    sprite.position.y = this.shape_data.y;
-    sprite.interactive = true;
-    this.displayObject = sprite;
+    // // center the sprite anchor point
+    // sprite.anchor.x = 0;
+    // sprite.anchor.y = 0;
+
+    // // move the sprite to the center of the canvas
+    // sprite.position.x = this.shape_data.x;
+    // sprite.position.y = this.shape_data.y;
+    // sprite.interactive = true;
+    // this.displayObject = sprite;
+    this.displayObject = graphics;
 
     // set color to the object
     // sprite.tint = 0x000000; // set color to the shape
 
-    this.app.stage.addChild(sprite);
+    this.app.stage.addChild(graphics);
     // setTimeout(() => {this.drawTransformer()}, 1000)
    }
 }
