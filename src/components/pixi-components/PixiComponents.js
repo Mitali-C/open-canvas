@@ -24,13 +24,12 @@ import Text from './base-object/Text';
 let app = new PIXI.Application({ 
   width: window.innerWidth, 
   height: window.innerHeight,                       
-  antialias: true,  // https://jsfiddle.net/8xnmru1b/2/
-  transparent: true, 
   autoDensity: true,
-  // backgroundColor:0x1099bb
-  resolution: 2,
-}
-);
+  resolution: window.devicePixelRatio || 1,
+  // view: document.getElementById("pxrender"),
+  backgroundColor: 0xffffff,
+  antialias: true
+});
 
 class PixiComponents extends React.Component {
   state = {
@@ -64,7 +63,7 @@ class PixiComponents extends React.Component {
   
     //Add the canvas that Pixi automatically created for you to the HTML document
     document.querySelector('#pxrender').appendChild(app.view);
-    app.renderer.autoDensity = true;
+    // app.renderer.autoDensity = true;
   
   }
 
