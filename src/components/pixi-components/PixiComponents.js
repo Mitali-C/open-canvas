@@ -11,7 +11,7 @@ import note_icon from '../../assets/icons/note.png';
 // import {drawCircle} from './draw_circle';
 // import {freehand} from './free_hand';
 // import {add_image} from './image-component/add_image';
-import {add_text} from './add_text';
+// import {add_text} from './add_text';
 import {add_note} from './add_note';
 import {data as image_data} from './temp_images';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,14 +19,16 @@ import Image from './base-object/Image';
 import Shape from './base-object/Shape';
 import Markup from './base-object/Markup';
 import './pixi.scss';
+import Text from './base-object/Text';
 
 let app = new PIXI.Application({ 
   width: window.innerWidth, 
   height: window.innerHeight,                       
-  antialias: true, 
+  antialias: true,  // https://jsfiddle.net/8xnmru1b/2/
   transparent: true, 
+  autoDensity: true,
   // backgroundColor:0x1099bb
-  // resolution: 1,
+  resolution: 2,
 }
 );
 
@@ -145,7 +147,8 @@ class PixiComponents extends React.Component {
           x: e.pageX,
           y: e.pageY
         }
-        add_text(text_data, app);
+        new Text(app, text_data);
+        // add_text(text_data, app);
         this.setState({tool:'select'})
         break;
       case "note":
@@ -205,7 +208,10 @@ class PixiComponents extends React.Component {
           onMouseDown={this.onMouseDown}
           onMouseUp={this.onMouseUp}
           style={{
-            cursor:this.getCursorType()
+            cursor:this.getCursorType(),
+            width:'100%',
+            minHeight:'100vh',
+            height:'100%'
           }}
           ref="pxrender" 
           id="pxrender">
