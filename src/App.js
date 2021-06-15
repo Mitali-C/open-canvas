@@ -5,12 +5,16 @@ import './App.scss';
 import WebglCanvas from './components/webgl-canvas/WebglCanvas';
 import Elements from './components/webgl-elements/Elements';
 import PixiComponents from './components/pixi-components/PixiComponents';
+import Main from './components/svg/Main';
 
 class App extends React.Component {
   render(){
     return(
       <Router>
         <Switch>
+          <Route path="/svg">
+            <Main></Main>
+          </Route>
           <Route path="/pixi">
             <PixiComponents></PixiComponents>
           </Route>
