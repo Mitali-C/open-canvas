@@ -1,12 +1,12 @@
 import React from 'react';
 import subjx from 'subjx';
-import circle_icon from '../../assets/icons/circle.png';
+// import circle_icon from '../../assets/icons/circle.png';
 import rectangle_icon from '../../assets/icons/rectangle.png';
-import pen_icon from '../../assets/icons/pen.png'; 
+// import pen_icon from '../../assets/icons/pen.png'; 
 import select_icon from '../../assets/icons/cursor.png';
-import image_icon from '../../assets/icons/image_icon.png';
-import text_icon from '../../assets/icons/text.png';
-import note_icon from '../../assets/icons/note.png';
+// import image_icon from '../../assets/icons/image_icon.png';
+// import text_icon from '../../assets/icons/text.png';
+// import note_icon from '../../assets/icons/note.png';
 import 'subjx/dist/style/subjx.css';
 import './main.scss';
 import Rectangle from './Rectangle';
