@@ -37,9 +37,58 @@ class BaseObject
             this.displayObject.addChild(graphics);
         }
     }
+    // onDragStart = (event) => {
+    //     // if(callback() === 'select'){ 
+    //         // console.log("Starting drag")
+    //       this.mouse_start_x = this.mouse.x
+    //       this.mouse_start_y = this.mouse.y
+    //       this.displayObject.alpha = 0.5;
+    //       this.dragging = true;
+    //       // Check for double click
+    //       if(this._clicked){
+    //         alert('double click in 150ms detected, you can emit or call method related!');
+    //         this.dragging = false;
+    //       }
+    //       this._clicked = false;
+    //       clearTimeout(this.__double);
+    //     // }
+    //   }
+
+    // onDragEnd = (event) => {
+    //     if(this.displayObject)
+    //     {
+    //         this.dragging = false;
+    //         this.displayObject.alpha = 1;
+    //         this.mouse_start_x = 0
+    //         this.mouse_start_y = 0
+    //         // Check for double click
+    //         this._clicked = true;
+    //         // _selected = true;
+    //         this.__double = setTimeout(() => { this._clicked = false; }, 150); // time for double click detection
+    //     }
+    // }
+    
+    // onDragMove = (event) => {
+    //     if(this.dragging && this.displayObject){
+    //       let start_x = this.displayObject.position.x
+    //       let start_y = this.displayObject.position.y
+    //       let delX = this.mouse.x - this.mouse_start_x
+    //       let delY = this.mouse.y - this.mouse_start_y
+    //       this.displayObject.position.set(start_x + delX, start_y + delY);
+    //       this.mouse_start_x = this.mouse.x
+    //       this.mouse_start_y = this.mouse.y
+    //     }
+    //   }
+
+    // stopDrag = () => {
+    //     this.dragging = false;
+    // }
 
     onClick = (event) => {
         if(!this.isSelected){
+            // this.displayObject.alpha = 0.5;
+            // this.drawTransformer();
+            new TransformerPixi(this.displayObject, this.mouse, this.stopDrag, this.app);
             this.isSelected = true;
             new TransformerPixi(this.displayObject, this.app);
         }
@@ -47,6 +96,19 @@ class BaseObject
     setInteractions = () => {
         if(this.displayObject)
         {
+            // console.log("Setting Interactions", this.displayObject)
+            // this.displayObject.on('mousedown', this.onDragStart);
+            // this.displayObject.on('touchstart', this.onDragStart);
+            // this.displayObject.on('pointerdown', this.onDragStart);
+            // this.displayObject.on('mouseup', this.onDragEnd);
+            // this.displayObject.on('mouseupoutside', this.onDragEnd);
+            // this.displayObject.on('touchend', this.onDragEnd);
+            // this.displayObject.on('touchendoutside', this.onDragEnd);
+            // this.displayObject.on('pointerup', this.onDragEnd);
+            // this.displayObject.on('pointerupoutside', this.onDragEnd);
+            // this.displayObject.on('mousemove', this.onDragMove);
+            // this.displayObject.on('touchmove', this.onDragMove);
+            // this.displayObject.on('pointermove', this.onDragMove);
             this.displayObject.on('click', this.onClick);
         }
     }
