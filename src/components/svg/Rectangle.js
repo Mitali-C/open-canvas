@@ -103,23 +103,23 @@ class Rectangle extends React.Component{
   render(){
     return(
       <g>
-        <rect id={this.state.id} className={`drag-svg-${this.state.id}`} x={this.props.data.x} y={this.props.data.y} width={this.state.width} height={this.state.height} stroke="black" fill="transparent" stroke-width="1" onClick={this.click}></rect>
+        <rect id={this.state.id} className={`drag-svg-${this.state.id}`} x={this.props.data.x} y={this.props.data.y} width={this.state.width} height={this.state.height} stroke="black" fill="transparent" stroke-width="2" onClick={this.click}></rect>
         {
           this.state.id === this.state.selected_id && (
             <>
             {/* connecting lines */}
-            <line x1={this.state.x-5} y1={this.state.y-5} x2={this.state.x+this.state.width+5} y2={this.state.y-5}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
-            <line x1={this.state.x-5} y1={this.state.y-5} x2={this.state.x-5} y2={this.state.y+this.state.height+5}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
-            <line x1={this.state.x+this.state.width+5} y1={this.state.y-5} x2={this.state.x+this.state.width+5} y2={this.state.y+this.state.height+5}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
-            <line x1={this.state.x-5} y1={this.state.y+this.state.height+5} x2={this.state.x+this.state.width+5} y2={this.state.y+this.state.height+5}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
+            <line x1={this.state.x} y1={this.state.y} x2={this.state.x+this.state.width} y2={this.state.y}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
+            <line x1={this.state.x} y1={this.state.y} x2={this.state.x} y2={this.state.y+this.state.height}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
+            <line x1={this.state.x+this.state.width} y1={this.state.y} x2={this.state.x+this.state.width} y2={this.state.y+this.state.height}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
+            <line x1={this.state.x} y1={this.state.y+this.state.height} x2={this.state.x+this.state.width} y2={this.state.y+this.state.height}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
             {/* top left */}
-            <circle cx={this.state.x-5} cy={this.state.y-5} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
+            <circle cx={this.state.x} cy={this.state.y} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
             {/* bottom right */}
-            <circle cx={this.state.x+this.state.width+5} cy={this.state.y+this.state.height+5} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
+            <circle cx={this.state.x+this.state.width} cy={this.state.y+this.state.height} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
             {/* top right */}
-            <circle cx={this.state.x+this.state.width+5} cy={this.state.y-5} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
+            <circle cx={this.state.x+this.state.width} cy={this.state.y} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
             {/* bottom left */}
-            <circle cx={this.state.x-5} cy={this.state.y+this.state.height+5} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
+            <circle cx={this.state.x} cy={this.state.y+this.state.height} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
             </>
           )
         }
