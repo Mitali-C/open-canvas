@@ -1,16 +1,15 @@
 import React from 'react';
-import subjx from 'subjx';
 // import circle_icon from '../../assets/icons/circle.png';
 import rectangle_icon from '../../assets/icons/rectangle.png';
-// import pen_icon from '../../assets/icons/pen.png'; 
+import pen_icon from '../../assets/icons/pen.png'; 
 import select_icon from '../../assets/icons/cursor.png';
 // import image_icon from '../../assets/icons/image_icon.png';
 // import text_icon from '../../assets/icons/text.png';
 // import note_icon from '../../assets/icons/note.png';
-import 'subjx/dist/style/subjx.css';
 import './main.scss';
 import Rectangle from './Rectangle';
 import { v4 as uuidv4 } from 'uuid';
+import Path from './Path';
 
 class Main extends React.Component{
   state = {
@@ -19,139 +18,13 @@ class Main extends React.Component{
     rectangles: [
 
     ],
-    selected_id:''
-  }
-
-  drawTransformer = () => {
-    if(this.state.selected_id.length>0){
-      // define methods
-      const methods = {
-        onInit(el) {
-          console.log('init');
-        },
-        onMove({
-          dx,
-          dy
-        }) {
-          // subjx('#move > span')[0].innerHTML = `x: ${dx}px; y: ${dy}px`;
-        },
-        onResize({
-          dx,
-          dy
-        }) {
-          // subjx('#resize > span')[0].innerHTML = `x: ${dx}px; y: ${dy}px`;
-        },
-        onRotate({
-          delta
-        }) {
-          // subjx('#rotate > span')[0].innerHTML = `${Math.floor(delta * 180 / Math.PI)}deg`;
-        },
-        onDrop() {
-          console.log('is dropped');
-        },
-        onDestroy() {
-          console.log('is destroyed');
-        }
-      };
-  
-      // additional options
-      const svgOptions = {
-        // container: '#svg-container',
-        //restrict: '#svg-container',
-        rotationPoint: true,
-        snap: {
-          x: 30,
-          y: 30,
-          angle: 25
-        },
-        ...methods
-      };
-      const svgs =
-      subjx(`.drag-svg-${this.state.selected_id}`).drag(svgOptions);
-      if(svgs){
-        svgs.forEach(item => {
-          subjx(item.controls).on('dblclick', () => {
-            item.disable();
-          });
-        });
-    
-        // double click activating/deactivating the drag method
-        subjx(`.drag-svg-${this.state.selected_id}`).on('dblclick', e => {
-          if (e.currentTarget.classList.contains('sjx-drag')) return;
-          const xDraggable = subjx(e.currentTarget).drag(svgOptions)[0];
-          // adding event to controls
-          const controls = xDraggable.controls;
-          subjx(controls).on('dblclick', () => {
-            console.log('double')
-            xDraggable.disable();
-          });
-        });
-      }
-    }
-  }
-
-  removeTransformer = (id) => {
-    console.log('removing...', id, this.state.selected_id)
-    // if(id.length>0 && id===this.state.selected_id){
-      // define methods
-      const methods = {
-        onInit(el) {
-          console.log('init');
-        },
-        onMove({
-          dx,
-          dy
-        }) {
-          // subjx('#move > span')[0].innerHTML = `x: ${dx}px; y: ${dy}px`;
-        },
-        onResize({
-          dx,
-          dy
-        }) {
-          // subjx('#resize > span')[0].innerHTML = `x: ${dx}px; y: ${dy}px`;
-        },
-        onRotate({
-          delta
-        }) {
-          // subjx('#rotate > span')[0].innerHTML = `${Math.floor(delta * 180 / Math.PI)}deg`;
-        },
-        onDrop() {
-          console.log('is dropped');
-        },
-        onDestroy() {
-          console.log('is destroyed', id);
-        }
-      };
-  
-      // additional options
-      const svgOptions = {
-        // container: '#svg-container',
-        //restrict: '#svg-container',
-        rotationPoint: true,
-        snap: {
-          x: 30,
-          y: 30,
-          angle: 25
-        },
-        ...methods
-      };
-      const svgs =
-      subjx(`.drag-svg-${id}`).drag(svgOptions)
-      console.log('svgs:', svgs)
-      // svgs.disable();
-      if(svgs){
-        svgs.forEach(item => {
-          item.disable();
-        });
-      }
-    // }
+    selected_id:'',
+    paths:[],
+    isDrawing:false,
   }
 
   selectId = (id) => {
-    // this.removeTransformer(this.state.selected_id);
-    this.setState({selected_id: id}, ()=>{
-      this.drawTransformer()
-    })
+    this.setState({selected_id:id})
   }
 
   renderToolbar = () => {
@@ -160,41 +33,26 @@ class Main extends React.Component{
       <div className="icon-container" onClick={()=>{this.setState({tool:'select'})}}>
         <img src={select_icon} alt="select"></img>
       </div>
-      {/* <div className="icon-container" onClick={()=>{
-        this.setState({tool:'image'});
-      }}>
-        <img src={image_icon} alt="text"></img>
-      </div>
-      <div className="icon-container" onClick={()=>{
-        this.setState({tool:'text'});
-      }}>
-        <img src={text_icon} alt="text"></img>
-      </div>
-      <div className="icon-container" onClick={()=>{
-        this.setState({tool:'note'});
-      }}>
-        <img src={note_icon} alt="text"></img>
-      </div>
-      <div className="icon-container" onClick={()=>{this.setState({tool:'pen'})}}>
-        <img src={pen_icon} alt="pen"></img>
-      </div>
-      <div className="icon-container" onClick={()=>{
-        this.setState({tool:'shape', shape_type:'circle'})
-      }}>
-        <img src={circle_icon} alt="circle"></img>
-      </div> */}
       <div className="icon-container" onClick={()=>{
         this.setState({tool:'shape', shape_type:'rectangle'})
       }}>
         <img src={rectangle_icon} alt="rectangle"></img>
+      </div>
+      <div className="icon-container" onClick={()=>{this.setState({tool:'pen'})}}>
+        <img src={pen_icon} alt="pen"></img>
       </div>
     </div>
     )
   }
 
   onMouseDown = (e) => {
-    console.log(e.pageX);
+    // this.setState({selected_id:''});
     switch(this.state.tool){
+      case 'pen':
+        this.setState({isDrawing:true});
+        let tempPaths = this.state.paths;
+        tempPaths.push({x:e.pageX, y: e.pageY, id:uuidv4(), points:[{x:e.pageX, y:e.pageY }]});
+        break;
       case 'shape':
         switch(this.state.shape_type){
           case 'rectangle':
@@ -211,14 +69,56 @@ class Main extends React.Component{
     }
   }
 
+  getCursorType = () => {
+    switch(this.state.tool){
+      case 'select':
+        return 'pointer'
+      case 'pen':
+        return 'pointer'
+      case 'eraser':
+        return 'pointer'
+      case 'shape':
+        return 'crosshair'
+      default:
+        return 'pointer'
+    }
+  }
+
+  onMouseUp = () => {
+    this.setState({isDrawing:false})
+  }
+
+  onMouseMove = (e) => {
+    if(this.state.isDrawing){
+      let paths = this.state.paths;
+      const x = e.pageX;
+      const y = e.pageY;
+      let temp = paths[paths.length-1];
+      let temp_points=[];
+      if(temp.points){
+        temp_points = temp.points;
+      }
+      temp_points.push({x,y});
+      temp.points = temp_points;
+      paths.pop();
+      paths.push(temp);
+      this.setState({paths})
+    }
+  }
+
   render(){
     return(
       <div id="svg-main">
         {this.renderToolbar()}
-        <svg style={{minHeight:'100vh', width:'100%'}} id="svg-container"  onMouseDown={this.onMouseDown}>
+        <svg style={{minHeight:'100vh', width:'100%', cursor:this.getCursorType()}} id="svg-container"  onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} onMouseMove={this.onMouseMove}>
           {
             this.state.rectangles.map((rectangle, index) => (
               <Rectangle data={rectangle} key="index" selectId={this.selectId} selected_id={this.state.selected_id}></Rectangle>
+            ))
+          }
+          {
+            this.state.paths.map(path => (
+              <Path data={path} selectId={this.selectId} selected_id={this.state.selected_id}></Path>
             ))
           }
         </svg>
