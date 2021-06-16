@@ -1,5 +1,5 @@
 import React from 'react';
-import interact from 'interactjs';
+// import interact from 'interactjs';
 
 class Path extends React.Component{
   state = {
