@@ -1,5 +1,5 @@
 import React from 'react';
-// import interact from 'interactjs';
+import interact from 'interactjs';
 
 class Path extends React.Component{
   state = {
@@ -28,6 +28,32 @@ class Path extends React.Component{
     // }
   }
 
+  dragMoveListener = (event) =>{
+    console.log(event.target)
+    var target = event.target,
+        // keep the dragged position in the data-x/data-y attributes
+        x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+        y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+    // translate the element
+    target.style.webkitTransform =
+    target.style.transform =
+      'translate(' + x + 'px, ' + y + 'px)';
+
+    // update the position attributes
+    target.setAttribute('data-x', x);
+    target.setAttribute('data-y', y);
+    this.setState({x: x, y: y})
+  }
+
+  addTransformer = () => {
+    const {data} = this.props;
+    interact(`.drag-svg-bounds-${data.id}`)
+    .draggable({
+      onmove: this.dragMoveListener
+    })
+  }
+
   componentDidMount(){
     this.setState({id:this.props.data.id})
   }
@@ -43,7 +69,7 @@ class Path extends React.Component{
     const {selected_id} = this.props;
     if(selected_id!==this.state.id){
       this.props.selectId(this.state.id);
-      // this.addTransformer();
+      this.addTransformer();
     }
   }
 
