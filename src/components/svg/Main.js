@@ -46,7 +46,7 @@ class Main extends React.Component{
   }
 
   onMouseDown = (e) => {
-    // this.setState({selected_id:''});
+    this.setState({selected_id:''});
     switch(this.state.tool){
       case 'pen':
         this.setState({isDrawing:true});
