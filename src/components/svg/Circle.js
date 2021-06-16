@@ -49,12 +49,12 @@ class Circle extends React.Component{
     // update the position attributes
     target.setAttribute('data-x', x);
     target.setAttribute('data-y', y);
-    this.setState({x: event.rect.left+this.state.width, y: event.rect.top+this.state.height})
+    this.setState({x: event.rect.left, y: event.rect.top})
   }
 
   addTransformer = () => {
     const {data} = this.props;
-    interact(`.drag-svg-${data.id}`)
+    interact(`.drag-svg-bounds-${data.id}`)
     .draggable({
       onmove: this.dragMoveListener
     })
@@ -103,43 +103,23 @@ class Circle extends React.Component{
   render(){
     return(
       <g>
-        <ellipse id={this.state.id} className={`drag-svg-${this.state.id}`} cx={this.props.data.x} cy={this.props.data.y} rx={this.state.width} ry={this.state.height} stroke="black" fill="transparent" stroke-width="1" onClick={this.click}></ellipse>
-        {
-          this.state.id === this.state.selected_id && (
-            <>
-            {/* <rect></rect> */}
-            {/* connecting lines */}
-            {/* top */}
-            <line x1={this.state.x-this.state.width} y1={this.state.y-this.state.height} x2={this.state.x+this.state.width} y2={this.state.y-this.state.height}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
-            {/* left */}
-            <line x1={this.state.x-this.state.width} y1={this.state.y-this.state.height} x2={this.state.x-this.state.width} y2={this.state.y+this.state.height}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
-            {/* right */}
-            <line x1={this.state.x+this.state.width} y1={this.state.y-this.state.height} x2={this.state.x+this.state.width} y2={this.state.y+this.state.height}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
-            {/* bottom */}
-            <line x1={this.state.x-this.state.width} y1={this.state.y+this.state.height} x2={this.state.x+this.state.width} y2={this.state.y+this.state.height}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
-            {/* top left */}
-            <circle cx={this.state.x-this.state.width} cy={this.state.y-this.state.height} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
-            {/* bottom right */}
-            <circle cx={this.state.x+this.state.width} cy={this.state.y+this.state.height} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
-            {/* top right */}
-            <circle cx={this.state.x+this.state.width} cy={this.state.y-this.state.height} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
-            {/* bottom left */}
-            <circle cx={this.state.x-this.state.width} cy={this.state.y+this.state.height} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
-
-            {/* ------------- */}
-            {/* top center */}
-            <circle cx={this.state.x} cy={this.state.y-this.state.height} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" ></circle>
-            {/* right center */}
-            <circle cx={this.state.x+this.state.width} cy={this.state.y} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" ></circle>
-            {/* left center */}
-            <circle cx={this.state.x-this.state.width} cy={this.state.y} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" ></circle>
-            {/* bottom center */}
-            <circle cx={this.state.x} cy={this.state.y+this.state.height} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" ></circle>
-
-            {/* <path d={`M ${this.state.x} ${this.state.y-this.state.height} c ${this.state.x-this.state.width} ${this.state.y-this.state.height} ${this.state.x-this.state.width} ${this.state.y}`} stroke="blue" stroke-width="5" fill="none" /> */}
-            </>
-          )
-        }
+      <ellipse id={this.state.id} className={`drag-svg-${this.state.id}`}  cx={this.state.x+this.state.width} cy={this.state.y+this.state.height} rx={this.state.width} ry={this.state.height} stroke="black" fill="transparent" stroke-width="1" onClick={this.click}></ellipse>
+      {
+        this.state.id === this.state.selected_id && (
+          <>
+          <rect id={this.state.id} className={`drag-svg-bounds-${this.state.id}`} x={this.props.data.x} y={this.props.data.y} width={this.state.width*2} height={this.state.height*2} stroke="#6cb7ff" fill="transparent" stroke-width="1" onClick={this.click}></rect>
+          {/* connecting lines */}
+          {/* top left */}
+          <circle cx={this.state.x} cy={this.state.y} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
+          {/* bottom right */}
+          <circle cx={this.state.x+(this.state.width*2)} cy={this.state.y+(this.state.height*2)} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
+          {/* top right */}
+          <circle cx={this.state.x+(this.state.width*2)} cy={this.state.y} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
+          {/* bottom left */}
+          <circle cx={this.state.x} cy={this.state.y+(this.state.height*2)} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
+          </>
+        )
+      }
       </g>
     )
   }
