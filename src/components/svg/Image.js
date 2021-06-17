@@ -1,7 +1,7 @@
 import React from 'react';
 import interact from 'interactjs';
 
-class Rectangle extends React.Component{
+class Image extends React.Component{
   state = {
     width:0,
     height:0,
@@ -54,7 +54,7 @@ class Rectangle extends React.Component{
 
   addTransformer = () => {
     const {data} = this.props;
-    interact(`.drag-svg-${data.id}`)
+    interact(`.drag-svg-bounds-${data.id}`)
     .draggable({
       onmove: this.dragMoveListener
     })
@@ -87,12 +87,15 @@ class Rectangle extends React.Component{
 
   removeTransformer = () => {
     const {data} = this.props;
-    interact(`.drag-svg-${data.id}`).unset();
+    interact(`.drag-svg-bounds-${data.id}`).unset();
   }
 
   click = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    var img = document.getElementById(this.state.id);
+    // var img = document.querySelector("image");
+    console.log(img.clientWidth)
     const {selected_id} = this.props;
     if(selected_id!==this.state.id){
       this.props.selectId(this.state.id);
@@ -100,18 +103,27 @@ class Rectangle extends React.Component{
     }
   }
 
+  onLoad = (e) => {
+    var img = document.getElementById(`drag-svg-foreign-${this.state.id}`);
+    // console.log(img.width)
+    // console.log(img.height);
+    this.setState({width:img.width, height: img.height});
+    var image_x = document.getElementById('foreign-img');
+    image_x.parentNode.removeChild(image_x);
+  }
+
   render(){
     return(
       <g>
-        <rect id={this.state.id} className={`drag-svg-${this.state.id}`} x={this.props.data.x} y={this.props.data.y} width={this.state.width} height={this.state.height} stroke="black" fill="transparent" stroke-width="2" onClick={this.click}></rect>
+      <foreignObject x={this.state.x} y={this.state.y} width="auto" height="auto" id="foreign-img">
+        <img id={`drag-svg-foreign-${this.state.id}`} className={`drag-svg-foreign-${this.state.id}`} x={this.state.x} y={this.state.y} width={this.state.width!==0 && this.state.width} height={this.state.height!==0 && this.state.height} src={this.props.data.src} onClick={this.click} onLoad={this.onLoad} alt="upload"></img>
+      </foreignObject>
+      <image id={this.state.id} className={`drag-svg-${this.state.id}`} x={this.state.x} y={this.state.y} width={this.state.width} height={this.state.height} href={this.props.data.src} onClick={this.click} alt="upload"></image>
         {
           this.state.id === this.state.selected_id && (
             <>
             {/* connecting lines */}
-            <line x1={this.state.x} y1={this.state.y} x2={this.state.x+this.state.width} y2={this.state.y}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
-            <line x1={this.state.x} y1={this.state.y} x2={this.state.x} y2={this.state.y+this.state.height}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
-            <line x1={this.state.x+this.state.width} y1={this.state.y} x2={this.state.x+this.state.width} y2={this.state.y+this.state.height}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
-            <line x1={this.state.x} y1={this.state.y+this.state.height} x2={this.state.x+this.state.width} y2={this.state.y+this.state.height}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
+            <rect id={this.state.id} className={`drag-svg-bounds-${this.state.id}`} x={this.props.data.x} y={this.props.data.y} width={this.state.width} height={this.state.height} stroke="#6cb7ff" fill="transparent" stroke-width="1" onClick={this.click}></rect>
             {/* top left */}
             <circle cx={this.state.x} cy={this.state.y} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
             {/* bottom right */}
@@ -128,4 +140,4 @@ class Rectangle extends React.Component{
   }
 }
 
-export default Rectangle;
+export default Image;

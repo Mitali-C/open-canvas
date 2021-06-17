@@ -1,7 +1,7 @@
 import React from 'react';
 import interact from 'interactjs';
 
-class Rectangle extends React.Component{
+class Circle extends React.Component{
   state = {
     width:0,
     height:0,
@@ -54,7 +54,7 @@ class Rectangle extends React.Component{
 
   addTransformer = () => {
     const {data} = this.props;
-    interact(`.drag-svg-${data.id}`)
+    interact(`.drag-svg-bounds-${data.id}`)
     .draggable({
       onmove: this.dragMoveListener
     })
@@ -81,7 +81,7 @@ class Rectangle extends React.Component{
       target.setAttribute('data-x', x);
       target.setAttribute('data-y', y);
       target.textContent = event.rect.width + '×' + event.rect.height;
-      this.setState({x: this.state.x+event.deltaRect.left, y: this.state.y+event.deltaRect.top, width:event.rect.width, height: event.rect.height})
+      this.setState({x: this.state.x+event.deltaRect.left, y: this.state.y+event.deltaRect.top, width:event.rect.width/2, height: event.rect.height/2})
     });
   }
 
@@ -103,29 +103,26 @@ class Rectangle extends React.Component{
   render(){
     return(
       <g>
-        <rect id={this.state.id} className={`drag-svg-${this.state.id}`} x={this.props.data.x} y={this.props.data.y} width={this.state.width} height={this.state.height} stroke="black" fill="transparent" stroke-width="2" onClick={this.click}></rect>
-        {
-          this.state.id === this.state.selected_id && (
-            <>
-            {/* connecting lines */}
-            <line x1={this.state.x} y1={this.state.y} x2={this.state.x+this.state.width} y2={this.state.y}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
-            <line x1={this.state.x} y1={this.state.y} x2={this.state.x} y2={this.state.y+this.state.height}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
-            <line x1={this.state.x+this.state.width} y1={this.state.y} x2={this.state.x+this.state.width} y2={this.state.y+this.state.height}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
-            <line x1={this.state.x} y1={this.state.y+this.state.height} x2={this.state.x+this.state.width} y2={this.state.y+this.state.height}  style={{stroke:'#6cb7ff', strokeWidth:1}} ></line>
-            {/* top left */}
-            <circle cx={this.state.x} cy={this.state.y} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
-            {/* bottom right */}
-            <circle cx={this.state.x+this.state.width} cy={this.state.y+this.state.height} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
-            {/* top right */}
-            <circle cx={this.state.x+this.state.width} cy={this.state.y} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
-            {/* bottom left */}
-            <circle cx={this.state.x} cy={this.state.y+this.state.height} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
-            </>
-          )
-        }
+      <ellipse id={this.state.id} className={`drag-svg-${this.state.id}`}  cx={this.state.x+this.state.width} cy={this.state.y+this.state.height} rx={this.state.width} ry={this.state.height} stroke="black" fill="transparent" stroke-width="1" onClick={this.click}></ellipse>
+      {
+        this.state.id === this.state.selected_id && (
+          <>
+          <rect id={this.state.id} className={`drag-svg-bounds-${this.state.id}`} x={this.props.data.x} y={this.props.data.y} width={this.state.width*2} height={this.state.height*2} stroke="#6cb7ff" fill="transparent" stroke-width="1" onClick={this.click}></rect>
+          {/* connecting lines */}
+          {/* top left */}
+          <circle cx={this.state.x} cy={this.state.y} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
+          {/* bottom right */}
+          <circle cx={this.state.x+(this.state.width*2)} cy={this.state.y+(this.state.height*2)} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
+          {/* top right */}
+          <circle cx={this.state.x+(this.state.width*2)} cy={this.state.y} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
+          {/* bottom left */}
+          <circle cx={this.state.x} cy={this.state.y+(this.state.height*2)} r="5" stroke="#6cb7ff" stroke-width="1" fill="#FFF" />
+          </>
+        )
+      }
       </g>
     )
   }
 }
 
-export default Rectangle;
+export default Circle;
