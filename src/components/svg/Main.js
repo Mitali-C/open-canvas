@@ -3,7 +3,7 @@ import circle_icon from '../../assets/icons/circle.png';
 import rectangle_icon from '../../assets/icons/rectangle.png';
 import pen_icon from '../../assets/icons/pen.png'; 
 import select_icon from '../../assets/icons/cursor.png';
-// import image_icon from '../../assets/icons/image_icon.png';
+import image_icon from '../../assets/icons/image_icon.png';
 // import text_icon from '../../assets/icons/text.png';
 // import note_icon from '../../assets/icons/note.png';
 import './main.scss';
@@ -11,6 +11,8 @@ import Rectangle from './Rectangle';
 import { v4 as uuidv4 } from 'uuid';
 import Path from './Path';
 import Circle from './Circle';
+import {data as image_data} from './temp_images';
+import Image from './Image';
 
 class Main extends React.Component{
   state = {
@@ -23,6 +25,16 @@ class Main extends React.Component{
     selected_id:'',
     paths:[],
     isDrawing:false,
+    images_list:[],
+    images:[]
+  }
+
+  componentDidMount(){
+    let temp_img_list = [];
+    for(let i =0 ; i<image_data.length; i++){
+      temp_img_list.push(image_data[i].urls.thumb);
+    }
+    this.setState({images_list: temp_img_list});
   }
 
   selectId = (id) => {
@@ -48,6 +60,9 @@ class Main extends React.Component{
       <div className="icon-container" onClick={()=>{this.setState({tool:'pen'})}}>
         <img src={pen_icon} alt="pen"></img>
       </div>
+      <div className="icon-container" onClick={()=>{this.setState({tool:'image'})}}>
+        <img src={image_icon} alt="pen"></img>
+      </div>
     </div>
     )
   }
@@ -59,6 +74,13 @@ class Main extends React.Component{
         this.setState({isDrawing:true});
         let tempPaths = this.state.paths;
         tempPaths.push({x:e.pageX, y: e.pageY, id:uuidv4(), points:[{x:e.pageX, y:e.pageY }]});
+        this.setState({paths: tempPaths});
+        break;
+      case 'image':
+        const image_index = (Math.random() * (30 - 0) + 0).toFixed(0);
+        let tempImages = this.state.images;
+        tempImages.push({x:e.pageX, y: e.pageY, id:uuidv4(), points:[{x:e.pageX, y:e.pageY }], width:0, height:0, src:this.state.images_list[image_index]});
+        this.setState({images: tempImages});
         break;
       case 'shape':
         switch(this.state.shape_type){
@@ -138,6 +160,12 @@ class Main extends React.Component{
               <Path data={path} selectId={this.selectId} selected_id={this.state.selected_id}></Path>
             ))
           }
+          {
+            this.state.images.map(path => (
+              <Image data={path} selectId={this.selectId} selected_id={this.state.selected_id}></Image>
+            ))
+          }
+          {/* <image href="https://images.unsplash.com/photo-1544885348-6cf79234ad61?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyMzExNDd8MHwxfHNlYXJjaHwxfHxwYXN0ZWwlMjBjb2xvcnN8ZW58MHx8fHwxNjIxODUxNjQ0&ixlib=rb-1.2.1&q=80&w=200" onLoad={()=>{console.log('loaded')}}/> */}
         </svg>
       </div>
     )
